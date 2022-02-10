@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include microconsultant *.css
+recursive-include microconsultant *.csv
+recursive-include microconsultant *.html
+recursive-include microconsultant *.ico
+recursive-include microconsultant *.js
+recursive-include microconsultant *.json
+recursive-include microconsultant *.md
+recursive-include microconsultant *.png
+recursive-include microconsultant *.py
+recursive-include microconsultant *.svg
+recursive-include microconsultant *.txt
+recursive-exclude microconsultant *.pyc
