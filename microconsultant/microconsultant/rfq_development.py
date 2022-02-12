@@ -29,6 +29,8 @@ def add_items(self, method):
 			if a in stock_dic:
 				break
 			stock_dic.update({a:alt_stocks})
+			if stock_dic[a] == None :
+				stock_dic.update({a:0})
 			qty_oh = qty_oh + stock_dic[a]
 		print(stock_dic)
 		qty_oh += d.actual_qty
