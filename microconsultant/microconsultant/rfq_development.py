@@ -23,7 +23,8 @@ def add_items(self, method):
 		stock = frappe.db.get_value("Bin",{'item_code':d.item_code,'warehouse':d.warehouse},"actual_qty")
 		stock_dic.update({d.item_code:stock})
 		altic = frappe.db.sql_list("""SELECT alternative_item_code FROM `tabItem Alternative` WHERE item_code = %s""",d.item_code)
-
+		if altic == None:
+			break
 		for a in altic:
 			alt_stocks = frappe.db.get_value("Bin",{'item_code':a,'warehouse':d.warehouse},"actual_qty")
 			if a in stock_dic:
