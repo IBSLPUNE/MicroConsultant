@@ -106,7 +106,7 @@ app_license = "MIT"
 
 doc_events = {
 	"Production Plan": {
-		"after_insert": "microconsultant.microconsultant.rfq_development.add_items",
+		"before_save": "microconsultant.microconsultant.rfq_development.add_items",
 	},
     "Request for Quotation": {
         "after_insert": "microconsultant.microconsultant.rfq_development.rfq_items",
