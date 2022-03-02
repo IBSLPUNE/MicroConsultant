@@ -110,6 +110,9 @@ doc_events = {
 	},
     "Request for Quotation": {
         "after_insert": "microconsultant.microconsultant.rfq_development.rfq_items",
+    },
+    "Request for Quotation": {
+    	"after_insert": "microconsultant.microconsultant.rfq_development.rfq_identity"
     }
 }
 
