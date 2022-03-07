@@ -61,7 +61,21 @@ def add_items(self, method):
 
 		
 def rfq_items(self, method):
-	for d in self.get('items'):
+	i = self.get('items')
+	for d in i[:]:
+		manufacturers = frappe.db.sql_list("""SELECT manufacturer_part_no FROM `tabItem Manufacturer` WHERE item_code = %s""",d.item_code)
+		print(manufacturers)
+		for a in manufacturers:
+			if d.manufacturer_part_no != a:
+				item = frappe.get_doc(self)
+				items = item.append('items',{})
+				items.item_code = d.item_code
+				items.qty = d.qty
+				items.manufacturer_part_no = a
+				items.warehouse = d.warehouse
+				item.schedule_date = d.schedule_date
+				item.set_missing_values()
+				items.insert()
 		altic = {}
 		altic = frappe.db.sql_list("""SELECT alternative_item_code FROM `tabItem Alternative` WHERE item_code = %s""",d.item_code)
 		manufacturers = frappe.db.sql_list("""SELECT manufacturer_part_no FROM `tabItem Manufacturer` WHERE item_code = %s""",d.item_code)
@@ -69,7 +83,8 @@ def rfq_items(self, method):
 		
 		for i in range(0, len(altic)):
 			item_supplier = frappe.db.get_value('Item Supplier',{"parent":'Item', "parent":altic[i]},'supplier')
-			item_manufacturers = frappe.db.sql_list("""SELECT manufacturer FROM `tabItem Manufacturer` WHERE item_code = %s""",altic[i])
+			item_manufacturers = frappe.db.sql_list("""SELECT manufacturer_part_no FROM `tabItem Manufacturer` WHERE item_code = %s""",altic[i])
+			print(item_manufacturers)
 			if item_manufacturers == []:
 				frappe.throw("Add item_manufacturers for item "+ altic[i])
 			for s in self.get('suppliers'):
@@ -84,20 +99,8 @@ def rfq_items(self, method):
 						row.conversion_factor = 1
 						row.warehouse = d.warehouse
 						row.schedule_date = d.schedule_date
-						row.manufacturer = item_manufacturers[m]
+						row.manufacturer_part_no = item_manufacturers[m]
 						row.insert()
 
 def rfq_identity(self, method):
-	i = self.get('items')
-	for d in i[:]:
-		manufacturers = frappe.db.sql_list("""SELECT manufacturer_part_no FROM `tabItem Manufacturer` WHERE item_code = %s""",d.item_code)
-		for a in manufacturers:
-			if d.manufacturer_part_no != a:
-				item = frappe.get_doc(self)
-				items = item.append('items',{})
-				items.item_code = d.item_code
-				items.qty = d.qty
-				items.manufacturer_part_no = a
-				items.warehouse = d.warehouse
-				item.set_missing_values()
-				items.insert()
+	print("2ndXXXXXXXXXXXXXXX")
