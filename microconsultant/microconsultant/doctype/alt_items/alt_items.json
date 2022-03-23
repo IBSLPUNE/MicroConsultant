@@ -1,0 +1,47 @@
+{
+ "actions": [],
+ "creation": "2022-03-18 14:53:29.710738",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "alternatives",
+  "alternatives_name"
+ ],
+ "fields": [
+  {
+   "columns": 2,
+   "fieldname": "alternatives",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Alternatives",
+   "options": "Item",
+   "reqd": 1
+  },
+  {
+   "columns": 2,
+   "fetch_from": "alternatives.item_name",
+   "fieldname": "alternatives_name",
+   "fieldtype": "Data",
+   "label": "Alternatives Name",
+   "read_only": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [
+  {
+   "link_doctype": "Item",
+   "link_fieldname": "item_code"
+  }
+ ],
+ "modified": "2022-03-21 11:44:45.381404",
+ "modified_by": "Administrator",
+ "module": "Microconsultant",
+ "name": "Alt Items",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
