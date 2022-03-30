@@ -35,7 +35,7 @@ def add_items(self, method):
 				stock_dic.update({a:0})
 			qty_oh = qty_oh + stock_dic[a]
 		qty_oh += d.actual_qty
-		qty_or = d.required_bom_qty - qty_oh
+		qty_or = d.quantity - qty_oh
 		if qty_or <= 0:
 			self.remove(d)
 			message = _("As there are sufficient raw materials alternate included, Material Request is not required for Warehouse {0}.").format(d.warehouse) + "<br><br>"
