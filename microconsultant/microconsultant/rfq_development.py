@@ -19,14 +19,17 @@ def add_items(self, method):
 	stock_dic={}
 	items = self.get("mr_items")
 	psalt(self)
+	print(self.warehouse)
 	for d in items[:]:
 		qty_oh=0.0
 		qty_or=0.0
-		stock = frappe.db.get_value("Bin",{'item_code':d.item_code,'warehouse':d.warehouse},"actual_qty")
+		stock = frappe.db.get_value("Bin",{'item_code':d.item_code},"actual_qty")
+		print(stock)
 		stock_dic.update({d.item_code:stock})
 		altic = frappe.db.sql_list("""SELECT alternative_item_code FROM `tabItem Alternative` WHERE item_code = %s AND product_specific_alternatives=0""",d.item_code)
 		for a in altic:
-			alt_stocks = frappe.db.get_value("Bin",{'item_code':a,'warehouse':d.warehouse},"actual_qty")
+			alt_stocks = frappe.db.get_value("Bin",{'item_code':a},"actual_qty")
+			print(alt_stocks)
 			if a in stock_dic:
 				print("%s stock",a)
 				break
@@ -68,9 +71,9 @@ def psalt(self):
 					if d.item_code == item[0]:
 						qty_oh=0.0
 						qty_or=0.0
-						stock = frappe.db.get_value("Bin",{'item_code':item[0],'warehouse':d.warehouse},"actual_qty")
+						stock = frappe.db.get_value("Bin",{'item_code':item[0]},"actual_qty")
 						stock_dic.update({item[0]:stock})
-						alt_stocks = frappe.db.get_value("Bin",{'item_code':p,'warehouse':d.warehouse},"actual_qty")
+						alt_stocks = frappe.db.get_value("Bin",{'item_code':p},"actual_qty")
 						if d in stock_dic:
 							break
 						stock_dic.update({p:alt_stocks})
