@@ -85,7 +85,7 @@ def psalt(self):
 							if stock_dic[p] == None :
 								stock_dic.update({p:0})
 							qty_oh = qty_oh + stock_dic[p]
-							qty_or = d.required_bom_qty - qty_oh
+							qty_or = d.quantity - qty_oh
 							if qty_or <= 0:
 								self.remove(d)
 								message = _("As there are sufficient raw materials alternate{0} included, Material Request is not required for Warehouse {0}.").format(item[0],d.warehouse) + "<br><br>"
@@ -95,7 +95,7 @@ def psalt(self):
 							if qty_or >= 0:
 								stock_dic.update({p:0})
 							else:
-								req_qty = d.required_bom_qty - d.actual_qty
+								req_qty = d.quantity
 								sorted_stock ={k: v for k,v in sorted(stock_dic.items(), key= lambda v: v[1])}
 								for x,y in sorted_stock.items():
 									req_qty -= y
