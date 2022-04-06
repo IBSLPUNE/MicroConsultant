@@ -19,25 +19,28 @@ def add_items(self, method):
 	stock_dic={}
 	items = self.get("mr_items")
 	psalt(self)
-	print(self.warehouse)
 	for d in items[:]:
 		qty_oh=0.0
 		qty_or=0.0
-		stock = frappe.db.get_value("Bin",{'item_code':d.item_code},"actual_qty")
-		print(stock)
+		stock = 0.0
+		alt_stock = 0.0
+		stocks = frappe.db.sql_list("""SELECT actual_qty FROM `tabBin` WHERE item_code=%s""",d.item_code)
+		for k in stocks:
+			stock = stock +k
 		stock_dic.update({d.item_code:stock})
 		altic = frappe.db.sql_list("""SELECT alternative_item_code FROM `tabItem Alternative` WHERE item_code = %s AND product_specific_alternatives=0""",d.item_code)
 		for a in altic:
-			alt_stocks = frappe.db.get_value("Bin",{'item_code':a},"actual_qty")
-			print(alt_stocks)
+			alt_stocks = frappe.db.sql_list("SELECT actual_qty FROM `tabBin` WHERE item_code=%s",a)
+			for o in alt_stocks:
+				alt_stock = alt_stock + o
 			if a in stock_dic:
 				print("%s stock",a)
 				break
-			stock_dic.update({a:alt_stocks})
+			stock_dic.update({a:alt_stock})
 			if stock_dic[a] == None :
 				stock_dic.update({a:0})
 			qty_oh = qty_oh + stock_dic[a]
-		qty_oh += d.actual_qty
+		qty_oh = qty_oh + stock_dic[d.item_code]
 		qty_or = d.quantity - qty_oh
 		if qty_or <= 0:
 			self.remove(d)
@@ -62,7 +65,7 @@ def add_items(self, method):
 def psalt(self):
 	stock_dic={}
 	for k in self.get("po_items"):
-		product_specific = frappe.db.sql_list("""SELECT alternatives FROM `tabAlt Items` WHERE parent=%s""",k.item_code)
+		product_specific = frappe.db.sql_list("""SELECT alternatives FROM `tabAlt items` WHERE parent=%s""",k.item_code)
 		for p in product_specific:
 			item = frappe.db.sql_list("""SELECT item_code FROM `tabItem Alternative` WHERE alternative_item_code = %s AND product_specific_alternatives=1""",p)
 			if item != []:
@@ -71,12 +74,13 @@ def psalt(self):
 					if d.item_code == item[0]:
 						qty_oh=0.0
 						qty_or=0.0
-						stock = frappe.db.get_value("Bin",{'item_code':item[0]},"actual_qty")
-						stock_dic.update({item[0]:stock})
-						alt_stocks = frappe.db.get_value("Bin",{'item_code':p},"actual_qty")
+						alt_stock=0.0
+						alt_stocks = frappe.db.sql_list("""SELECT actual_qty FROM `tabBin` WHERE item_code=%s""",p)
+						for k in alt_stocks:
+							alt_stock = alt_stock +k
 						if d in stock_dic:
 							break
-						stock_dic.update({p:alt_stocks})
+						stock_dic.update({p:alt_stock})
 						if stock_dic[p] == None :
 							stock_dic.update({p:0})
 							qty_oh = qty_oh + stock_dic[p]
@@ -159,40 +163,44 @@ def rfq_ps(self):
 	for a in self.get("items"):
 		mr = frappe.db.get_value("Material Request Item",{'parent':a.material_request},"production_plan")
 		break
-	p = frappe.get_doc("Production Plan", mr)
-	for i in p.get("po_items"):
-		item = frappe.get_doc(self)
-		items = item.append('products', {})
-		items.item_code = i.item_code
-		items.bom_no = i.bom_no
-		items.planned_qty = i.planned_qty
-		items.planned_start_date = i.planned_start_date
-		items.insert()
-	products = self.get("products")
-	for a in products[:]:
-		product_specific = frappe.db.sql_list("""SELECT alternatives FROM `tabAlt Items` WHERE parent=%s""",a.item_code)
-		for p in product_specific:
-			item = frappe.db.sql_list("""SELECT item_code FROM `tabItem Alternative` WHERE alternative_item_code = %s AND product_specific_alternatives=1""",p)
-			if item != []:
-				it = self.get("items")
-				for d in it[:]:
-					if d.item_code == item[0]:
-						item_supplier = frappe.db.get_value('Item Supplier',{"parent":'Item', "parent":p},'supplier')
-						item_manufacturers = frappe.db.sql_list("""SELECT manufacturer_part_no FROM `tabItem Manufacturer` WHERE item_code = %s""",p)
-						if item_manufacturers == []:
-							frappe.throw("Add item_manufacturers for item "+ p)
-						for s in self.get('suppliers'):
-							for m in range(0, len(item_manufacturers)):
-								if s.supplier == item_supplier:
-									doc = frappe.get_doc(self)
-									row = doc.append('items',{})
-									row.item_code = p
-									row.qty = d.qty
-									row.warehouse = d.warehouse
-									row.schedule_date = d.schedule_date
-									row.manufacturer_part_no = item_manufacturers[m]
-									doc.set_missing_values()
-									row.insert()
+	if mr == None:
+		pass
+	else:
+		p = frappe.get_doc("Production Plan", mr)
+		for i in p.get("po_items"):
+			item = frappe.get_doc(self)
+			items = item.append('products', {})
+			items.item_code = i.item_code
+			items.bom_no = i.bom_no
+			items.planned_qty = i.planned_qty
+			items.planned_start_date = i.planned_start_date
+			items.insert()
+		products = self.get("products")
+		for a in products[:]:
+			product_specific = frappe.db.sql_list("""SELECT alternatives FROM `tabAlt Items` WHERE parent=%s""",a.item_code)
+			for p in product_specific:
+				itm = frappe.db.sql_list("""SELECT item_code FROM `tabItem Alternative` WHERE alternative_item_code = %s AND product_specific_alternatives=1""",p)
+				if item != []:
+					it = self.get("items")
+					for d in it[:]:
+						for z in itm:
+							if d.item_code == z:
+								item_supplier = frappe.db.get_value('Item Supplier',{"parent":'Item', "parent":p},'supplier')
+								item_manufacturers = frappe.db.sql_list("""SELECT manufacturer_part_no FROM `tabItem Manufacturer` WHERE item_code = %s""",p)
+								if item_manufacturers == []:
+									frappe.throw("Add item_manufacturers for item "+ p)
+								for s in self.get('suppliers'):
+									for m in range(0, len(item_manufacturers)):
+										if s.supplier == item_supplier:
+											doc = frappe.get_doc(self)
+											row = doc.append('items',{})
+											row.item_code = p
+											row.qty = d.qty
+											row.warehouse = d.warehouse
+											row.schedule_date = d.schedule_date
+											row.manufacturer_part_no = item_manufacturers[m]
+											doc.set_missing_values()
+											row.insert()
 
 
 
