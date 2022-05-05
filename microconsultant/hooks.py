@@ -31,7 +31,7 @@ app_license = "MIT"
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
-# doctype_js = {"doctype" : "public/js/doctype.js"}
+#doctype_js = {"Work Order" : "custom_scripts/work_order_custom.js"}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
@@ -105,13 +105,16 @@ app_license = "MIT"
 # Hook on document methods and events
 
 doc_events = {
-	"Production Plan": {
-		"before_save": "microconsultant.microconsultant.rfq_development.add_items",
-	},
-    "Request for Quotation": {
-    	"after_insert": "microconsultant.microconsultant.rfq_development.rfq_items",
+ 	"Production Plan": {
+ 		"before_save": "microconsultant.microconsultant.rfq_development.add_items",
+ 	},
+     "Request for Quotation": {
+     	"after_insert": "microconsultant.microconsultant.rfq_development.rfq_items",
+    },
+    "Work Order": {
+          "after_insert": "microconsultant.microconsultant.wo_alt.alt_items"
     }
-}
+ }
 
 
 # Scheduled Tasks
