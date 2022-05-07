@@ -57,6 +57,5 @@ def wo_ps(self):
 							row = doc.append('required_items',{})
 							row.item_code = p
 							row.required_qty = d.required_qty
-							row.description = altic[i]
 							row.source_warehouse = d.source_warehouse
 							row.insert()	
