@@ -108,11 +108,11 @@ doc_events = {
  	"Production Plan": {
  		"before_save": "microconsultant.microconsultant.rfq_development.add_items",
  	},
-     "Request for Quotation": {
-     	"after_insert": "microconsultant.microconsultant.rfq_development.rfq_items",
+  "Request for Quotation": {
+    "after_insert": "microconsultant.microconsultant.rfq_development.rfq_items",
     },
-    "Work Order": {
-          "after_insert": "microconsultant.microconsultant.wo_alt.alt_items"
+  "Work Order": {
+    "after_insert": "microconsultant.microconsultant.wo_alt.alt_items"
     }
  }
 

@@ -88,7 +88,7 @@ def psalt(self):
 							qty_or = d.quantity - qty_oh
 							if qty_or <= 0:
 								self.remove(d)
-								message = _("As there are sufficient raw materials alternate{0} included, Material Request is not required for Warehouse {0}.").format(item[0],d.warehouse) + "<br><br>"
+								message = _("As there are sufficient raw materials included, Material Request is not required for Warehouse {0}.").format(d.warehouse) + "<br><br>"
 								frappe.msgprint(message, title=_("Note"))
 							else:
 								d.quantity = qty_or

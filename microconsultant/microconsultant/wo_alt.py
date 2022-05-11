@@ -18,12 +18,10 @@ def alt_items(self, method):
 			for o in alt_stocks:
 				alt_stock = alt_stock + o
 			if a in stock_dic:
-				print("%s stock",a)
 				break
 			stock_dic.update({a:alt_stock})	
 		for i in range(0, len(altic)):
 			item_supplier = frappe.db.get_value('Item Supplier',{"parent":'Item', "parent":altic[i]},'supplier')
-			print(stock_dic[altic[i]])
 			if stock_dic[altic[i]] != 0:
 				doc = frappe.get_doc(self)
 				row = doc.append('required_items',{})
