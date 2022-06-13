@@ -56,6 +56,7 @@ def alt_items(self, method):
 						dict.update({p:p_stock})
 		print(len(dict))
 		item[d+1].idx = item[d].idx + len(dict)
+		doc.save()
 
 
 def wo_ps(self):
