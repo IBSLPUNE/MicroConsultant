@@ -59,7 +59,6 @@ def alt_items(self, method):
 		frappe.db.commit()
 
 
-
 def wo_ps(self):
 	stock_dic={}
 	product_specific = frappe.db.sql_list("""SELECT alternatives FROM `tabAlt Items` WHERE parent=%s""",self.production_item)
