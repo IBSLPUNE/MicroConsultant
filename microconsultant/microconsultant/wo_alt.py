@@ -23,7 +23,22 @@ def alt_items(self, method):
 		for i in range(0, len(altic)):
 			item_supplier = frappe.db.get_value('Item Supplier',{"parent":'Item', "parent":altic[i]},'supplier')
 			if stock_dic[altic[i]] != 0:
-				item[d+1].idx = item[d].idx+2
+				ps= {}
+				product_specific = frappe.db.sql_list("""SELECT alternatives FROM `tabAlt Items` WHERE parent=%s""",self.production_item)
+				for p in product_specific:
+					itm = frappe.db.sql_list("""SELECT item_code FROM `tabItem Alternative` WHERE alternative_item_code = %s AND product_specific_alternatives=1""",p)
+					if itm != []:
+						for z in itm:
+							if item[d].item_code == z:
+								p_stock=0.0
+								p_stocks = frappe.db.sql_list("""SELECT actual_qty FROM `tabBin` WHERE item_code=%s""",p)
+								for k in p_stocks:
+									p_stock = p_stock + k
+									if d in ps:
+										break
+									if p_stock != 0.0:
+										ps.update({p:p_stock})
+
 				doc = frappe.get_doc(self)
 				row = doc.append('required_items',{})
 				row.item_code = altic[i]
@@ -32,31 +47,34 @@ def alt_items(self, method):
 				row.source_warehouse = item[d].source_warehouse
 				row.alternate = 1
 				row.alternate_of = item[d].item_code
-				row.idx = item[d].idx+1
+				row.idx = item[d].idx+1 + len(ps)
 				row.insert()
-		dict = {}
-		for a in altic:
-			alt_stocks = frappe.db.sql_list("SELECT actual_qty FROM `tabBin` WHERE item_code=%s",a)
-			for o in alt_stocks:
-				alt_stock = alt_stock + o
-			if a in stock_dic:
-				break
-			dict.update({a:alt_stock})
-		product_specific = frappe.db.sql_list("""SELECT alternatives FROM `tabAlt Items` WHERE parent=%s""",self.production_item)
-		for p in product_specific:
-			itm = frappe.db.sql_list("""SELECT item_code FROM `tabItem Alternative` WHERE alternative_item_code = %s AND product_specific_alternatives=1""",p)
-			if itm != []:
-				for z in itm:
-					p_stock=0.0
-					p_stocks = frappe.db.sql_list("""SELECT actual_qty FROM `tabBin` WHERE item_code=%s""",p)
-					for k in p_stocks:
-						p_stock = p_stock + k
-						if d in dict:
-							break
-						dict.update({p:p_stock})
-		item[d+1].idx = item[d].idx + len(dict)
-		doc.save()
-		frappe.db.commit()
+		
+		if item[d].alternate == 0:
+			dict = {}
+			for a in altic:
+				alt_stocks = frappe.db.sql_list("SELECT actual_qty FROM `tabBin` WHERE item_code=%s",a)
+				for o in alt_stocks:
+					alt_stock = alt_stock + o
+				if alt_stock!= 0:
+					dict.update({a:alt_stock})
+			product_specific = frappe.db.sql_list("""SELECT alternatives FROM `tabAlt Items` WHERE parent=%s""",self.production_item)
+			for p in product_specific:
+				itm = frappe.db.sql_list("""SELECT item_code FROM `tabItem Alternative` WHERE alternative_item_code = %s AND product_specific_alternatives=1""",p)
+				if itm != []:
+					for z in itm:
+						if item[d].item_code  == z:
+							p_stock=0.0
+							p_stocks = frappe.db.sql_list("""SELECT actual_qty FROM `tabBin` WHERE item_code=%s""",p)
+							for k in p_stocks:
+								p_stock = p_stock + k
+								if d in dict:
+									break
+								if p_stock != 0.0:
+									dict.update({p:p_stock})
+			if item[d+1].alternate == 0:
+				item[d+1].idx = item[d].idx + len(dict) + 1
+				doc.save()
 
 
 def wo_ps(self):
@@ -68,23 +86,23 @@ def wo_ps(self):
 			it = self.get("required_items")
 			for d in range(0,len(it)):
 				for z in itm:
-					alt_stock=0.0
-					alt_stocks = frappe.db.sql_list("""SELECT actual_qty FROM `tabBin` WHERE item_code=%s""",p)
-					for k in alt_stocks:
-						alt_stock = alt_stock +k
-					if d in stock_dic:
-						break
-					stock_dic.update({p:alt_stock})
-					if stock_dic[p] == None :
-						stock_dic.update({p:0})
-					if stock_dic[p] != 0:
-						if it[d].item_code == z:
-							doc = frappe.get_doc(self)
-							row = doc.append('required_items',{})
-							row.item_code = p
-							row.required_qty = it[d].required_qty
-							row.source_warehouse = it[d].source_warehouse
-							row.alternate = 1
-							row.alternate_of = it[d].item_code
-							row.idx = it[d].idx + 1
-							row.insert()
+						alt_stock=0.0
+						alt_stocks = frappe.db.sql_list("""SELECT actual_qty FROM `tabBin` WHERE item_code=%s""",p)
+						for k in alt_stocks:
+							alt_stock = alt_stock +k
+						if d in stock_dic:
+							break
+						stock_dic.update({p:alt_stock})
+						if stock_dic[p] == None :
+							stock_dic.update({p:0})
+						if stock_dic[p] != 0:
+							if it[d].item_code == z:
+								doc = frappe.get_doc(self)
+								row = doc.append('required_items',{})
+								row.item_code = p
+								row.required_qty = it[d].required_qty
+								row.source_warehouse = it[d].source_warehouse
+								row.alternate = 1
+								row.alternate_of = it[d].item_code
+								row.idx = it[d].idx + 1
+								row.insert()
