@@ -54,8 +54,10 @@ def alt_items(self, method):
 						if d in dict:
 							break
 						dict.update({p:p_stock})
-		print(len(dict))
 		item[d+1].idx = item[d].idx + len(dict)
+		doc.save()
+		frappe.db.commit()
+
 
 
 def wo_ps(self):
