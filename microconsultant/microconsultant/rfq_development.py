@@ -24,7 +24,7 @@ def add_items(self, method):
 		qty_or=0.0
 		stock = 0.0
 		alt_stock = 0.0
-		stocks = frappe.db.sql_list("""SELECT actual_qty FROM `tabBin` WHERE item_code=%s""",d.item_code)
+		stocks = frappe.db.sql_list("""SELECT actual_qty FROM `tabBin` WHERE item_code=%s and warehouse != %s""",(d.item_code,d.warehouse))
 		for k in stocks:
 			stock = stock +k
 		stock_dic.update({d.item_code:stock})
@@ -40,6 +40,7 @@ def add_items(self, method):
 			if stock_dic[a] == None :
 				stock_dic.update({a:0})
 			qty_oh = qty_oh + stock_dic[a]
+			print(stock_dic[a])
 		qty_oh = qty_oh + stock_dic[d.item_code]
 		qty_or = d.quantity - qty_oh
 		if qty_or <= 0:
