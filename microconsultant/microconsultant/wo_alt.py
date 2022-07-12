@@ -50,6 +50,7 @@ def alt_items(self, method):
 				row.idx = item[d].idx+1 + len(ps)
 				row.insert()
 		
+		doc= frappe.get_doc(self)
 		if item[d].alternate == 0:
 			dict = {}
 			for a in altic:
