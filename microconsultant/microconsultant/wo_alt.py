@@ -50,7 +50,9 @@ def alt_items(self, method):
 				row.idx = item[d].idx+1 + len(ps)
 				row.insert()
 		
-		doc = frappe.get_doc(self)
+
+
+		doc= frappe.get_doc(self)
 		if item[d].alternate == 0:
 			dict = {}
 			for a in altic:
@@ -72,10 +74,11 @@ def alt_items(self, method):
 								if d in dict:
 									break
 								if p_stock != 0.0:
-									dict.update({p:p_stock})
-			if item[d+1].alternate == 0:
-				item[d+1].idx = item[d].idx + len(dict) + 1
-				doc.save()
+									dict.update({p:p_stock})						
+	if item[d].alternate == 0:
+		item[d].idx = item[d].idx + len(dict) + 1
+		doc.save()
+		doc.validate()
 
 
 def wo_ps(self):
