@@ -103,13 +103,6 @@ def psalt(self):
 								req_qty = abs(req_qty)
 								stock_dic.update({x:req_qty})
 
-
-
-
-
-
-
-
 						
 
 
