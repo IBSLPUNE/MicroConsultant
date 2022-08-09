@@ -115,7 +115,7 @@ doc_events = {
     "after_insert": "microconsultant.microconsultant.wo_alt.alt_items"
     },
     "Supplier Quotation": {
-    "after_insert": "microconsultant.microconsultant.supplier_quotation.filter_items",
+    "before_save": "microconsultant.microconsultant.supplier_quotation.filter_items",
     },
   }
 
