@@ -113,6 +113,7 @@ def psalt(self):
 def rfq_items(self, method):
 	rfq_sorting(self)
 	rfq_ps(self)
+	product(self)
 	i = self.get('items')
 	for d in i[:]:
 		manufacturers = frappe.db.sql_list("""SELECT manufacturer_part_no FROM `tabItem Manufacturer` WHERE item_code = %s""",d.item_code)
@@ -124,6 +125,7 @@ def rfq_items(self, method):
 				items.qty = d.qty
 				items.alternate = 1
 				items.idx = d.idx + 1
+				items.product_name = d.product_name
 				items.alternate_of = d.item_code
 				items.manufacturer_part_no = a
 				items.warehouse = d.warehouse
@@ -152,6 +154,7 @@ def rfq_items(self, method):
 						row.conversion_factor = 1
 						row.alternate = 1
 						row.alternate_of = d.item_code
+						row.product_name = d.product_name
 						row.idx = d.idx+1
 						row.warehouse = d.warehouse
 						row.schedule_date = d.schedule_date
@@ -159,7 +162,6 @@ def rfq_items(self, method):
 						row.insert()
 	doc = frappe.get_doc(self)
 	doc.reload()
-	
 
 
 
@@ -201,6 +203,7 @@ def rfq_ps(self):
 											row.item_code = p
 											row.qty = d.qty
 											row.alternate = 1
+											row.product_name = d.product_name
 											row.idx = d.idx + 1
 											row.alternate_of = d.item_code
 											row.warehouse = d.warehouse
@@ -252,3 +255,19 @@ def rfq_sorting(self):
 			item[d+1].idx = item[d].idx + len(dict) + 1
 	doc = frappe.get_doc(self)
 	doc.save()
+
+
+def product(self):
+	products = []
+	for item in self.get('products'):
+		for a in self.get('items'):
+			item_list = frappe.db.get_list('BOM Item',filters= {
+				'parent':item.bom_no,
+				}
+				,pluck= 'item_code',fields ='item_code')
+			for bom_item in item_list:
+				if bom_item == a.item_code:
+					if a.product_name is not None:
+						a.product_name = a.product_name + '\n' + item.item_code
+					else:
+						a.product_name = item.item_code
