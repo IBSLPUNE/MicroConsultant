@@ -113,6 +113,7 @@ def psalt(self):
 def rfq_items(self, method):
 	rfq_sorting(self)
 	rfq_ps(self)
+	product(self)
 	i = self.get('items')
 	for d in i[:]:
 		manufacturers = frappe.db.sql_list("""SELECT manufacturer_part_no FROM `tabItem Manufacturer` WHERE item_code = %s""",d.item_code)
@@ -180,7 +181,6 @@ def rfq_ps(self):
 			items.planned_qty = i.planned_qty
 			items.planned_start_date = i.planned_start_date
 			items.insert()
-		product(self)
 		products = self.get("products")
 		for a in products[:]:
 			product_specific = frappe.db.sql_list("""SELECT alternatives FROM `tabAlt Items` WHERE parent=%s""",a.item_code)
