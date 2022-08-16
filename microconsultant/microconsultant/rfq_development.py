@@ -270,6 +270,6 @@ def product(self):
 					if a.product_name is not None:
 						a.product_name = a.product_name + '\n' + item.item_code
 					else:
-						a.product_name = item.item_code
+						a.product_name = "TEXT"
 
 					self.save()
