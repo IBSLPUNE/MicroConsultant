@@ -271,4 +271,5 @@ def product(self):
 						a.product_name = a.product_name + '\n' + item.item_code
 					else:
 						a.product_name = "TEXT"
-					a.insert()
+					doc = frappe.get_doc(self)
+					doc.save()
