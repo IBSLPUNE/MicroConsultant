@@ -259,6 +259,7 @@ def rfq_sorting(self):
 
 def product(self):
 	products = []
+	frappe.throw("yes")
 	for item in self.get('products'):
 		for a in self.get('items'):
 			item_list = frappe.db.get_list('BOM Item',filters= {
