@@ -257,7 +257,7 @@ def rfq_sorting(self):
 	doc.save()
 
 
-def product(self,method):
+def product(self):
 	products = []
 	for item in self.get('products'):
 		for a in self.get('items'):
