@@ -272,4 +272,3 @@ def product(self,method):
 					else:
 						a.product_name = "TEXT"
 					a.reload()
-					
