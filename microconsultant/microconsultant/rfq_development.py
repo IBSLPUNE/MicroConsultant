@@ -269,8 +269,7 @@ def product(self,method):
 				if bom_item == a.item_code:
 					if a.product_name is not None:
 						a.product_name = a.product_name + '\n' + item.item_code
-						self.save()
 					else:
 						a.product_name = "TEXT"
-						self.save()
+					a.reload()
 					
