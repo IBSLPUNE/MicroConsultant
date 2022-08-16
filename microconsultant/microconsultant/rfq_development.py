@@ -267,10 +267,11 @@ def product(self):
 				,pluck= 'item_code',fields ='item_code')
 			for bom_item in item_list:
 				if bom_item == a.item_code:
-					frappe.throw(a.item_code , bom_item)
 					if a.product_name is not None:
+						frappe.throw(a.product_name)
 						a.product_name = a.product_name + '\n' + item.item_code
 					else:
+						frappe.throw(item.item_code)
 						a.product_name = item.item_code
 
 					self.save()
