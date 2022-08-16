@@ -117,9 +117,6 @@ doc_events = {
     "Supplier Quotation": {
     "before_save": "microconsultant.microconsultant.supplier_quotation.filter_items",
     },
-   "Request for Quotation": {
-    "before_save": "microconsultant.microconsultant.rfq_development.product",
-    },
   }
 
 
