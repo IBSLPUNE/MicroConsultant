@@ -137,13 +137,12 @@ def rfq_items(self, method):
 
 		
 		for i in range(0, len(altic)):
-			item_supplier = frappe.db.get_value('Item Supplier',{"parent":'Item', "parent":altic[i]},'supplier')
 			item_manufacturers = frappe.db.sql_list("""SELECT manufacturer_part_no FROM `tabItem Manufacturer` WHERE item_code = %s""",altic[i])
 			if item_manufacturers == []:
 				frappe.throw("Add item_manufacturers for item "+ altic[i])
 			for s in self.get('suppliers'):
 				for m in range(0, len(item_manufacturers)):
-					if s.supplier == item_supplier:
+					if frappe.db.exists("Item Supplier", {'parent':altic[i]}, 'supplier':s.supplier):
 						doc = frappe.get_doc(self)
 						row = doc.append('items',{})
 						row.item_code = altic[i]
