@@ -140,8 +140,8 @@ def rfq_items(self, method):
 			item_manufacturers = frappe.db.sql_list("""SELECT manufacturer_part_no FROM `tabItem Manufacturer` WHERE item_code = %s""",altic[i])
 			if item_manufacturers == []:
 				frappe.throw("Add item_manufacturers for item "+ altic[i])
-			for s in self.get('suppliers'):
-				for m in range(0, len(item_manufacturers)):
+			for m in range(0, len(item_manufacturers)):
+				for s in self.get('suppliers'):
 					if frappe.db.exists("Item Supplier", {'parent':altic[i]}, 'supplier':s.supplier):
 						doc = frappe.get_doc(self)
 						row = doc.append('items',{})
@@ -158,6 +158,7 @@ def rfq_items(self, method):
 						row.schedule_date = d.schedule_date
 						row.manufacturer_part_no = item_manufacturers[m]
 						row.insert()
+						break
 	doc = frappe.get_doc(self)
 	doc.reload()
 
