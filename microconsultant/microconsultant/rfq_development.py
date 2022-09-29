@@ -195,9 +195,9 @@ def rfq_ps(self):
 								item_manufacturers = frappe.db.sql_list("""SELECT manufacturer_part_no FROM `tabItem Manufacturer` WHERE item_code = %s""",p)
 								if item_manufacturers == []:
 									frappe.throw("Add item_manufacturers for item "+ p)
-								for s in self.get('suppliers'):
-									for m in range(0, len(item_manufacturers)):
-										if s.supplier == item_supplier:
+								for m in range(0, len(item_manufacturers)):
+									for s in self.get('suppliers'):
+										if frappe.db.exists("Item Supplier", {'parent':p}, 'supplier':s.supplier):
 											doc = frappe.get_doc(self)
 											row = doc.append('items',{})
 											row.item_code = p
@@ -211,6 +211,7 @@ def rfq_ps(self):
 											row.manufacturer_part_no = item_manufacturers[m]
 											doc.set_missing_values()
 											row.insert()
+											break
 
 
 
