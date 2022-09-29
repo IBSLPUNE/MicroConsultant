@@ -109,7 +109,7 @@ doc_events = {
  		"before_save": "microconsultant.microconsultant.rfq_development.add_items",
  	},
   "Request for Quotation": {
-    "before_save": "microconsultant.microconsultant.rfq_development.rfq_items",
+    "after_insert": "microconsultant.microconsultant.rfq_development.rfq_items",
     },
   "Work Order": {
     "after_insert": "microconsultant.microconsultant.wo_alt.alt_items"
