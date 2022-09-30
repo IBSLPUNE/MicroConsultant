@@ -193,7 +193,11 @@ def rfq_ps(self):
 									frappe.throw("Add item_manufacturers for item "+ p)
 								for m in range(0, len(item_manufacturers)):
 									for s in self.get('suppliers'):
+<<<<<<< HEAD
 										if frappe.db.exists("Item Supplier",{'parent':p, 'supplier':s.supplier}):
+=======
+										if frappe.db.exists("Item Supplier", {'parent':p}, 'supplier':s.supplier):
+>>>>>>> 01c7e04d302988554e71c5c815062c6f44bbe9e0
 											doc = frappe.get_doc(self)
 											row = doc.append('items',{})
 											row.item_code = p
@@ -208,6 +212,10 @@ def rfq_ps(self):
 											doc.set_missing_values()
 											row.insert()
 											break
+<<<<<<< HEAD
+=======
+
+>>>>>>> 01c7e04d302988554e71c5c815062c6f44bbe9e0
 
 
 
