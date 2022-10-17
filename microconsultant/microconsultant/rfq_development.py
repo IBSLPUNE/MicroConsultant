@@ -21,7 +21,7 @@ def add_items(self, method):
 		qty_or=0.0
 		stock = 0.0
 		alt_stock = 0.0
-		stocks = frappe.db.sql_list("""SELECT actual_qty FROM `tabBin` WHERE item_code=%s and warehouse != %s""",(d.item_code,d.warehouse))
+		stocks = frappe.db.sql_list("""SELECT actual_qty FROM `tabBin` WHERE item_code=%s and warehouse != and reserved_qty_for_production = '0'  %s""",(d.item_code,d.warehouse))
 		for k in stocks:
 			stock = stock +k
 		stock_dic.update({d.item_code:stock})
