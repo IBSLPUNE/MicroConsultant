@@ -13,7 +13,7 @@
  "name": "Report for Supplier Quotation Comparison",
  "owner": "Administrator",
  "ref_doctype": "Supplier Quotation",
- "report_name": "Supplier Quotation Comparison",
+ "report_name": "Report for Supplier Quotation Comparison",
  "report_type": "Script Report",
  "roles": [
   {
