@@ -1,4 +1,4 @@
-frappe.query_reports["Report for Supplier Quotation Comparison"] = {
+frappe.query_reports["Supplier Quotation Comparison"] = {
 	filters: [
 		{
 			fieldtype: "Link",
