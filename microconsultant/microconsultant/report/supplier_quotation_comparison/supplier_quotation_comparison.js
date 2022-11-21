@@ -1,7 +1,7 @@
 // Copyright (c) 2016, Frappe Technologies Pvt. Ltd. and contributors
 // For license information, please see license.txt
 
-frappe.query_reports["Supplier Quotation Comparison"] = {
+frappe.query_reports["Report for Supplier Quotation Comparison"] = {
 	filters: [
 		{
 			fieldtype: "Link",
