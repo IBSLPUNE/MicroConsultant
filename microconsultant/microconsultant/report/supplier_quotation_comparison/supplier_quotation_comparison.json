@@ -9,7 +9,7 @@
  "is_standard": "No",
  "modified": "2017-02-24 20:04:58.784351",
  "modified_by": "Administrator",
- "module": "Buying",
+ "module": "Microconsultant",
  "name": "Report for Supplier Quotation Comparison",
  "owner": "Administrator",
  "ref_doctype": "Supplier Quotation",
