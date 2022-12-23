@@ -53,7 +53,7 @@ def get_data(filters, conditions):
 			sqi.qty, sqi.stock_qty, sqi.amount,
 			sqi.uom, sqi.stock_uom,sqi.moq_mpq,sqi.alternate,sqi.alternate_of,sqi.manufacturer_part_no,
 			sqi.request_for_quotation,
-			sqi.lead_time_days, sq.supplier as supplier_name, sq.valid_till
+			sqi.lead_time_days, sq.supplier as supplier_name, sq.valid_till,sq.job_number
 		FROM
 			`tabSupplier Quotation Item` sqi,
 			`tabSupplier Quotation` sq
@@ -112,6 +112,7 @@ def prepare_data(supplier_quotation_data, filters):
 			"stock_uom": data.get("stock_uom"),
 			"request_for_quotation": data.get("request_for_quotation"),
 			"valid_till": data.get("valid_till"),
+			"job_number": data.get("job_number"),
 			"lead_time_days": data.get("lead_time_days"),
 		}
 		row["price_per_unit"] = flt(row["price"]) / (flt(data.get("stock_qty")) or 1)
