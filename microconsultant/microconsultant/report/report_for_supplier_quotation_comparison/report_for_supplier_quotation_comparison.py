@@ -209,8 +209,8 @@ def get_columns(filters):
 		{"fieldname": "uom", "label": _("UOM"), "fieldtype": "Link", "options": "UOM", "width": 90},
 		{"fieldname": "qty", "label": _("Quantity"), "fieldtype": "Float", "width": 80},
 		{"fieldname": "moq_mpq", "label": _("MOQ MPQ"), "fieldtype": "Data", "width": 80},
-		{"fieldname": "alternate", "label": _("Alternate"), "fieldtype": "Data", "width": 80},
-		{"fieldname": "alternate_of", "label": _("Alternate Of"), "fieldtype": "Check", "width": 80},
+		{"fieldname": "alternate", "label": _("Alternate"), "fieldtype": "Check", "width": 80},
+		{"fieldname": "alternate_of", "label": _("Alternate Of"), "fieldtype": "Data", "width": 80},
 		{"fieldname": "manufacturer_part_no", "label": _("Manufacturer Part No"), "fieldtype": "Data", "width": 80},
 		{
 			"fieldname": "price",
