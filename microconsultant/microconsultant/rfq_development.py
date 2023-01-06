@@ -21,7 +21,7 @@ def add_items(self, method):
 		qty_or=0.0
 		stock = 0.0
 		alt_stock = 0.0
-		stocks = frappe.db.sql_list("""SELECT projected_qty FROM `tabBin` WHERE item_code=%s and warehouse !=%s  and reserved_qty_for_production >='0'""",(d.item_code,d.warehouse))
+		stocks = frappe.db.sql_list("""SELECT projected_qty FROM `tabBin` WHERE item_code=%s and warehouse !=%s""",(d.item_code,d.warehouse))
 		for k in stocks:
 			stock = stock +k
 		stock_dic.update({d.item_code:stock})
@@ -73,7 +73,7 @@ def psalt(self):
 							qty_oh=0.0
 							qty_or=0.0
 							alt_stock=0.0
-							alt_stocks = frappe.db.sql_list("""SELECT projected_qty FROM `tabBin` WHERE item_code=%s and reserved_qty_for_production >='0'""",p)
+							alt_stocks = frappe.db.sql_list("""SELECT projected_qty FROM `tabBin` WHERE item_code=%s""",p)
 							for k in alt_stocks:
 								alt_stock = alt_stock +k
 							if d in stock_dic:
