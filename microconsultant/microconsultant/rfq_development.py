@@ -36,6 +36,7 @@ def add_items(self, method):
 			if stock_dic[a] == None :
 				stock_dic.update({a:0})
 			qty_oh = qty_oh + stock_dic[a]
+			d.alternate_qty = d.alternate_qty+qty_oh
 		qty_oh = qty_oh + stock_dic[d.item_code]
 		qty_or = d.quantity - qty_oh
 		if qty_or <= 0:
