@@ -22,42 +22,43 @@ def add_items(self, method):
 		stock = 0.0
 		alt_stock = 0.0
 		stocks = frappe.db.sql_list("""SELECT projected_qty FROM `tabBin` WHERE item_code=%s and warehouse !=%s""",(d.item_code,d.warehouse))
-		for k in stocks:
-			stock = stock +k
-		stock_dic.update({d.item_code:stock})
-		altic = frappe.db.sql_list("""SELECT alternative_item_code FROM `tabItem Alternative` WHERE item_code = %s AND product_specific_alternatives=0""",d.item_code)
-		for a in altic:
-			alt_stocks = frappe.db.sql_list("SELECT projected_qty FROM `tabBin` WHERE item_code=%s and reserved_qty_for_production >='0'",a)
-			for o in alt_stocks:
-				alt_stock = alt_stock + o
-			if a in stock_dic:
-				break
-			stock_dic.update({a:alt_stock})
-			if stock_dic[a] == None :
-				stock_dic.update({a:0})
-			qty_oh = qty_oh + stock_dic[a]
-			d.alternate_qty = d.alternate_qty+qty_oh
-		qty_oh = qty_oh + stock_dic[d.item_code]
-		qty_or = d.quantity - qty_oh
-		if qty_or <= 0:
-			self.remove(d)
-			message = _("As there are sufficient raw materials alternate included, Material Request is not required for Warehouse {0}.").format(d.warehouse) + "<br><br>"
-			frappe.msgprint(message, title=_("Note"))
-		else:
-			d.quantity = qty_or
-			#d.save()
-		for a in altic:
-			if qty_or >= 0:
-				stock_dic.update({a:0})
+		if stocks<0:
+			for k in stocks:
+				stock = stock +k
+			stock_dic.update({d.item_code:stock})
+			altic = frappe.db.sql_list("""SELECT alternative_item_code FROM `tabItem Alternative` WHERE item_code = %s AND product_specific_alternatives=0""",d.item_code)
+			for a in altic:
+				alt_stocks = frappe.db.sql_list("SELECT projected_qty FROM `tabBin` WHERE item_code=%s and reserved_qty_for_production >='0'",a)
+				for o in alt_stocks:
+					alt_stock = alt_stock + o
+				if a in stock_dic:
+					break
+				stock_dic.update({a:alt_stock})
+				if stock_dic[a] == None :
+					stock_dic.update({a:0})
+				qty_oh = qty_oh + stock_dic[a]
+				d.alternate_qty = d.alternate_qty+qty_oh
+			qty_oh = qty_oh + stock_dic[d.item_code]
+			qty_or = d.quantity - qty_oh
+			if qty_or <= 0:
+				self.remove(d)
+				message = _("As there are sufficient raw materials alternate included, Material Request is not required for Warehouse {0}.").format(d.warehouse) + "<br><br>"
+				frappe.msgprint(message, title=_("Note"))
 			else:
-				req_qty = d.required_bom_qty - d.actual_qty
-				sorted_stock ={k: v for k,v in sorted(stock_dic.items(), key= lambda v: v[1])}
-				for x,y in sorted_stock.items():
-					req_qty -= y
-					if req_qty < 0:
-						break
-				req_qty = abs(req_qty)
-				stock_dic.update({x:req_qty})
+				d.quantity = qty_or
+				#d.save()
+			for a in altic:
+				if qty_or >= 0:
+					stock_dic.update({a:0})
+				else:
+					req_qty = d.required_bom_qty - d.actual_qty
+					sorted_stock ={k: v for k,v in sorted(stock_dic.items(), key= lambda v: v[1])}
+					for x,y in sorted_stock.items():
+						req_qty -= y
+						if req_qty < 0:
+							break
+					req_qty = abs(req_qty)
+					stock_dic.update({x:req_qty})
 
 def psalt(self):
 	stock_dic={}
@@ -74,32 +75,33 @@ def psalt(self):
 							qty_or=0.0
 							alt_stock=0.0
 							alt_stocks = frappe.db.sql_list("""SELECT projected_qty FROM `tabBin` WHERE item_code=%s""",p)
-							for k in alt_stocks:
-								alt_stock = alt_stock +k
-							if d in stock_dic:
-								break
-							stock_dic.update({p:alt_stock})
-							if stock_dic[p] == None :
-								stock_dic.update({p:0})
-							qty_oh = qty_oh + stock_dic[p]
-							qty_or = d.quantity - qty_oh
-							if qty_or <= 0:
-								self.remove(d)
-								message = _("As there are sufficient raw materials included, Material Request is not required for Warehouse {0}.").format(d.warehouse) + "<br><br>"
-								frappe.msgprint(message, title=_("Note"))
-							else:
-								d.quantity = qty_or
-							if qty_or >= 0:
-								stock_dic.update({p:0})
-							else:
-								req_qty = d.quantity
-								sorted_stock ={k: v for k,v in sorted(stock_dic.items(), key= lambda v: v[1])}
-								for x,y in sorted_stock.items():
-									req_qty -= y
-									if req_qty < 0:
-										break
-								req_qty = abs(req_qty)
-								stock_dic.update({x:req_qty})
+							if alt_stocks<0:
+								for k in alt_stocks:
+									alt_stock = alt_stock +k
+								if d in stock_dic:
+									break
+								stock_dic.update({p:alt_stock})
+								if stock_dic[p] == None :
+									stock_dic.update({p:0})
+								qty_oh = qty_oh + stock_dic[p]
+								qty_or = d.quantity - qty_oh
+								if qty_or <= 0:
+									self.remove(d)
+									message = _("As there are sufficient raw materials included, Material Request is not required for Warehouse {0}.").format(d.warehouse) + "<br><br>"
+									frappe.msgprint(message, title=_("Note"))
+								else:
+									d.quantity = qty_or
+								if qty_or >= 0:
+									stock_dic.update({p:0})
+								else:
+									req_qty = d.quantity
+									sorted_stock ={k: v for k,v in sorted(stock_dic.items(), key= lambda v: v[1])}
+									for x,y in sorted_stock.items():
+										req_qty -= y
+										if req_qty < 0:
+											break
+									req_qty = abs(req_qty)
+									stock_dic.update({x:req_qty})
 
 						
 
