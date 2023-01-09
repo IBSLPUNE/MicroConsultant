@@ -24,10 +24,10 @@ def add_items(self, method):
 		stocks = frappe.db.sql_list("""SELECT projected_qty FROM `tabBin` WHERE item_code=%s and warehouse !=%s""",(d.item_code,d.warehouse))
 		for k in stocks:
 			stock = stock +k
-			qty_oh = qty_oh + stock_dic[d.item_code]
-			qty_or = d.quantity - qty_oh
 		if stock>0:
 			stock_dic.update({d.item_code:stock})
+			qty_oh = qty_oh + stock_dic[d.item_code]
+			qty_or = d.quantity - qty_oh
 # 			altic = frappe.db.sql_list("""SELECT alternative_item_code FROM `tabItem Alternative` WHERE item_code = %s AND product_specific_alternatives=0""",d.item_code)
 		altic = frappe.db.get_list('Item Alternative',filters={'item_code':d.item_code,'product_specific_alternatives':0},fields=['alternative_item_code'],pluck='alternative_item_code')
 		frappe.errprint(str(altic))
