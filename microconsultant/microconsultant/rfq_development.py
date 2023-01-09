@@ -30,7 +30,6 @@ def add_items(self, method):
 			qty_or = d.quantity - qty_oh
 # 			altic = frappe.db.sql_list("""SELECT alternative_item_code FROM `tabItem Alternative` WHERE item_code = %s AND product_specific_alternatives=0""",d.item_code)
 		altic = frappe.db.get_list('Item Alternative',filters={'item_code':d.item_code,'product_specific_alternatives':0},fields=['alternative_item_code'],pluck='alternative_item_code')
-		frappe.errprint(str(altic))
 		for a in altic:
 			alt_stocks = frappe.db.sql_list("SELECT projected_qty FROM `tabBin` WHERE item_code=%s",a)
 			for o in alt_stocks:
@@ -43,6 +42,7 @@ def add_items(self, method):
 					stock_dic.update({a:0})
 				qty_oh = qty_oh + stock_dic[a]
 				d.alternate_qty = d.alternate_qty+qty_oh
+				frappe.errprint(str(alt_stock))
 		if qty_or <= 0:
 			self.remove(d)
 			message = _("As there are sufficient raw materials alternate included, Material Request is not required for Warehouse {0}.").format(d.warehouse) + "<br><br>"
