@@ -42,7 +42,6 @@ def add_items(self, method):
 					stock_dic.update({a:0})
 				qty_oh = qty_oh + stock_dic[a]
 				d.alternate_qty = d.alternate_qty+qty_oh
-				frappe.errprint(str(alt_stock))
 		if qty_or <= 0:
 			self.remove(d)
 			message = _("As there are sufficient raw materials alternate included, Material Request is not required for Warehouse {0}.").format(d.warehouse) + "<br><br>"
