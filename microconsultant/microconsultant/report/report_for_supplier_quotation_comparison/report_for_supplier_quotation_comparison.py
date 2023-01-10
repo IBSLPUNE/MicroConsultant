@@ -63,7 +63,7 @@ def get_data(filters, conditions):
 			AND sq.company = %(company)s
 			AND sq.transaction_date between %(from_date)s and %(to_date)s
 			{0}
-			order by sq.transaction_date, sqi.index""".format(
+			order by sq.transaction_date, sqi.idx""".format(
 			conditions
 		),
 		filters,
