@@ -51,7 +51,7 @@ def get_data(filters, conditions):
 		SELECT
 			sqi.parent, sqi.item_code,
 			sqi.qty, sqi.stock_qty, sqi.amount,
-			sqi.uom, sqi.stock_uom,sqi.moq_mpq,sqi.alternate,sqi.alternate_of,sqi.manufacturer_part_no,
+			sqi.uom, sqi.stock_uom,sqi.moq_mpq,sqi.alternate,sqi.alternate_of,sqi.manufacturer_part_no,sqi.comments
 			sqi.request_for_quotation,
 			sqi.lead_time_days, sq.supplier as supplier_name, sq.valid_till,sq.job_number
 		FROM
@@ -104,6 +104,7 @@ def prepare_data(supplier_quotation_data, filters):
 			"quotation": data.get("parent"),
 			"qty": data.get("qty"),
 			"moq_mpq": data.get("moq_mpq"),
+			"comments": data.get("comments"),
 			"alternate": data.get("alternate"),
 			"alternate_of": data.get("alternate_of"),
 			"manufacturer_part_no": data.get("manufacturer_part_no"),
@@ -209,6 +210,7 @@ def get_columns(filters):
 		{"fieldname": "uom", "label": _("UOM"), "fieldtype": "Link", "options": "UOM", "width": 90},
 		{"fieldname": "qty", "label": _("Quantity"), "fieldtype": "Float", "width": 80},
 		{"fieldname": "moq_mpq", "label": _("MOQ MPQ"), "fieldtype": "Data", "width": 80},
+		{"fieldname": "comments", "label": _("Comments"), "fieldtype": "Data", "width": 80},
 		{"fieldname": "alternate", "label": _("Alternate"), "fieldtype": "Check", "width": 80},
 		{"fieldname": "alternate_of", "label": _("Alternate Of"), "fieldtype": "Data", "width": 80},
 		{"fieldname": "manufacturer_part_no", "label": _("Manufacturer Part No"), "fieldtype": "Data", "width": 80},
