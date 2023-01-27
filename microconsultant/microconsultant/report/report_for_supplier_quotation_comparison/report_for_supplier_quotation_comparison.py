@@ -51,7 +51,7 @@ def get_data(filters, conditions):
 		SELECT
 			sqi.parent, sqi.item_code,
 			sqi.qty, sqi.stock_qty, sqi.amount,
-			sqi.uom, sqi.stock_uom,sqi.moq_mpq,sqi.alternate,sqi.alternate_of,sqi.manufacturer_part_no
+			sqi.uom, sqi.stock_uom,sqi.moq_mpq,sqi.alternate,sqi.comments,sqi.alternate_of,sqi.manufacturer_part_no
 			sqi.request_for_quotation,
 			sqi.lead_time_days, sq.supplier as supplier_name, sq.valid_till,sq.job_number
 		FROM
