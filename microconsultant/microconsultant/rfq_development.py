@@ -30,6 +30,7 @@ def add_items(self, method):
 			qty_or = d.quantity - qty_oh
 # 			altic = frappe.db.sql_list("""SELECT alternative_item_code FROM `tabItem Alternative` WHERE item_code = %s AND product_specific_alternatives=0""",d.item_code)
 		altic = frappe.db.get_list('Item Alternative',filters={'item_code':d.item_code,'product_specific_alternatives':0},fields=['alternative_item_code'],pluck='alternative_item_code')
+		qty_oh = 0.0
 		for a in altic:
 			alt_stocks = frappe.db.sql_list("SELECT projected_qty FROM `tabBin` WHERE item_code=%s",a)
 			for o in alt_stocks:
@@ -41,6 +42,7 @@ def add_items(self, method):
 				if stock_dic[a] == None :
 					stock_dic.update({a:0})
 				qty_oh = qty_oh + stock_dic[a]
+				qty_or = qty_or - qty_oh
 				d.alternate_qty = d.alternate_qty+qty_oh
 		if qty_or <= 0:
 			self.remove(d)
