@@ -18,7 +18,7 @@ def add_items(self, method):
 	psalt(self)
 	for d in items[:]:
 		qty_oh=0.0
-		qty_or=0.0
+		qty_or=d.quantity
 		stock = 0.0
 		alt_stock = 0.0
 		stocks = frappe.db.sql_list("""SELECT projected_qty FROM `tabBin` WHERE item_code=%s and warehouse !=%s""",(d.item_code,d.warehouse))
