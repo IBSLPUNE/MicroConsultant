@@ -12,7 +12,11 @@ from frappe.utils import (
 )
 from frappe import _, msgprint
 
-def add_items(self, method):
+@frappe.whitelist()
+def add_items(doc,warehouse):
+	self = frappe.get_doc('Production Plan',doc)
+	warehouse = warehouse.split(",")
+	frappe.throw(warehouse)
 	stock_dic={}
 	items = self.get("mr_items")
 	psalt(self)
@@ -33,7 +37,7 @@ def add_items(self, method):
 			altic = frappe.db.get_list('Item Alternative',filters={'item_code':d.item_code,'product_specific_alternatives':0},fields=['alternative_item_code'],pluck='alternative_item_code')
 			qty_oh = 0.0
 			for a in altic:
-				alt_stocks = frappe.db.sql_list("SELECT actual_qty FROM `tabBin` WHERE item_code=%s and warehouse=%s",(a,d.warehouse))
+				alt_stocks = frappe.db.sql_list("""SELECT projected_qty FROM `tabBin` WHERE item_code=%s and warehouse=%s""",(a,))
 				for o in alt_stocks:
 					alt_stock = alt_stock + o
 				if alt_stock>0:
@@ -80,7 +84,7 @@ def psalt(self):
 								qty_oh=0.0
 								qty_or=0.0
 								alt_stock=0.0
-								alt_stocks = frappe.db.sql_list("""SELECT actual_qty FROM `tabBin` WHERE item_code=%s and warehouse=%s""",(p,d.warehouse))
+								alt_stocks = frappe.db.sql_list("""SELECT projected_qty FROM `tabBin` WHERE item_code=%s and warehouse=%s""",(p,d.warehouse))
 								for k in alt_stocks:
 									alt_stock = alt_stock +k
 								if alt_stock>0:
@@ -121,7 +125,7 @@ def psalt(self):
 								qty_oh=0.0
 								qty_or=0.0
 								alt_stock=0.0
-								alt_stocks = frappe.db.sql_list("""SELECT actual_qty FROM `tabBin` WHERE item_code=%s and warehouse""",(p,d.warehouse))
+								alt_stocks = frappe.db.sql_list("""SELECT projected_qty FROM `tabBin` WHERE item_code=%s and warehouse""",(p,d.warehouse))
 								for k in alt_stocks:
 									alt_stock = alt_stock +k
 								if alt_stock>0:

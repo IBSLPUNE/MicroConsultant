@@ -31,7 +31,7 @@ app_license = "MIT"
 # page_js = {"page" : "public/js/file.js"}
 
 # include js in doctype views
-#doctype_js = {"Work Order" : "custom_scripts/work_order_custom.js"}
+# doctype_js = {"Production Plan" : "public/js/production_plan.js"}
 # doctype_list_js = {"doctype" : "public/js/doctype_list.js"}
 # doctype_tree_js = {"doctype" : "public/js/doctype_tree.js"}
 # doctype_calendar_js = {"doctype" : "public/js/doctype_calendar.js"}
@@ -112,7 +112,7 @@ doc_events = {
     "after_insert": "microconsultant.microconsultant.rfq_development.rfq_items",
     },
   "Work Order": {
-    "after_insert": "microconsultant.microconsultant.wo_alt.alt_items"
+    "before_save": "microconsultant.microconsultant.wo_alt.alt_items"
     },
     "Supplier Quotation": {
     "before_save": "microconsultant.microconsultant.supplier_quotation.filter_items",
