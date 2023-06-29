@@ -11,15 +11,33 @@ from frappe.utils import (
 	nowdate,
 )
 from frappe import _, msgprint
+import json
+
+def get_warehouse_list(warehouses):
+	warehouse_list = []
+
+	warehouses = json.loads(warehouses)
+
+	for row in warehouses:
+		child_warehouses = frappe.db.get_descendants("Warehouse", row.get("warehouse"))
+		if child_warehouses:
+			warehouse_list.extend(child_warehouses)
+		else:
+			warehouse_list.append(row.get("warehouse"))
+
+	return warehouse_list
 
 @frappe.whitelist()
-def add_items(doc,warehouse):
-	self = frappe.get_doc('Production Plan',doc)
-	warehouse = warehouse.split(",")
-	frappe.throw(warehouse)
+def add_items(self,method,warehouse):
+	warehouses = list(set(get_warehouse_list(warehouse)))
+	if (
+			self.get("for_warehouse")
+			and self.get("for_warehouse") in warehouses
+		):
+			warehouses.remove(self.get("for_warehouse"))
 	stock_dic={}
 	items = self.get("mr_items")
-	psalt(self)
+	psalt(self,warehouses)
 	for d in items[:]:
 		if d.material_request_type == 'Purchase':
 			qty_oh=0.0
@@ -37,8 +55,8 @@ def add_items(doc,warehouse):
 			altic = frappe.db.get_list('Item Alternative',filters={'item_code':d.item_code,'product_specific_alternatives':0},fields=['alternative_item_code'],pluck='alternative_item_code')
 			qty_oh = 0.0
 			for a in altic:
-				alt_stocks = frappe.db.sql_list("""SELECT projected_qty FROM `tabBin` WHERE item_code=%s and warehouse=%s""",(a,))
-				alt_stocks = frappe.db.sql_list("SELECT actual_qty FROM `tabBin` WHERE item_code=%s and warehouse=%s",(a,d.warehouse))
+				for i in warehouses:
+					alt_stocks_w = frappe.db.sql_list("""SELECT projected_qty FROM `tabBin` WHERE item_code=%s and warehouse in %s""",(a,warehouses))
 				for o in alt_stocks:
 					alt_stock = alt_stock + o
 				if alt_stock>0:
@@ -70,7 +88,7 @@ def add_items(doc,warehouse):
 					req_qty = abs(req_qty)
 					stock_dic.update({x:req_qty})
 
-def psalt(self):
+def psalt(self,warehouses):
 	stock_dic={}
 	for k in self.get("po_items"):
 		product_specific = frappe.db.sql_list("""SELECT alternatives FROM `tabAlt Items` WHERE parent=%s""",k.item_code)
@@ -85,8 +103,7 @@ def psalt(self):
 								qty_oh=0.0
 								qty_or=0.0
 								alt_stock=0.0
-								alt_stocks = frappe.db.sql_list("""SELECT projected_qty FROM `tabBin` WHERE item_code=%s and warehouse=%s""",(p,d.warehouse))
-								alt_stocks = frappe.db.sql_list("""SELECT actual_qty FROM `tabBin` WHERE item_code=%s and warehouse=%s""",(p,d.warehouse))
+								alt_stocks = frappe.db.sql_list("""SELECT projected_qty FROM `tabBin` WHERE item_code=%s and warehouse in %s""",(p,warehouses))
 								for k in alt_stocks:
 									alt_stock = alt_stock +k
 								if alt_stock>0:
@@ -97,7 +114,7 @@ def psalt(self):
 										stock_dic.update({p:0})
 									qty_oh = qty_oh + stock_dic[p]
 									qty_or = d.quantity - qty_oh
-									if qty_or <= 0:
+									if qty_or <= 0: 
 										self.remove(d)
 										message = _("As there are sufficient raw materials included, Material Request is not required for Warehouse {0}.").format(d.warehouse) + "<br><br>"
 										frappe.msgprint(message, title=_("Note"))
@@ -127,8 +144,7 @@ def psalt(self):
 								qty_oh=0.0
 								qty_or=0.0
 								alt_stock=0.0
-								alt_stocks = frappe.db.sql_list("""SELECT projected_qty FROM `tabBin` WHERE item_code=%s and warehouse""",(p,d.warehouse))
-								alt_stocks = frappe.db.sql_list("""SELECT actual_qty FROM `tabBin` WHERE item_code=%s and warehouse""",(p,d.warehouse))
+								alt_stocks = frappe.db.sql_list("""SELECT projected_qty FROM `tabBin` WHERE item_code=%s and warehouse""",(p,warehouses))
 								for k in alt_stocks:
 									alt_stock = alt_stock +k
 								if alt_stock>0:
@@ -157,7 +173,6 @@ def psalt(self):
 										req_qty = abs(req_qty)
 										stock_dic.update({x:req_qty})
 
-						
 
 
 			
