@@ -1,5 +1,6 @@
 frappe.ui.form.on('Production Plan', {
 	calculate_alternates:function(frm) {
+	   
         const title = __("Transfer Materials For Warehouse {0}", [frm.doc.for_warehouse]);
 			var dialog = new frappe.ui.Dialog({
 				title: title,
@@ -20,14 +21,11 @@ frappe.ui.form.on('Production Plan', {
 					},
 				],
 				primary_action(values) {
-					for (var i =0;i<values.warehouses.lenght;i++){
-					    
-					}
-					console.log(values.warehouses[0])
-      frappe.call({
-          method:"microconsultant.microconsultant.rfq_development.add_items",
-          args:{doc:frm.doc.name,warehouse:values.warehouses}
-      })
+		var k = values.warehouses
+					
+					
+					
+      frm.set_value('alt_warehouses',JSON.stringify(k))
         dialog.hide();
     }
 			});	
