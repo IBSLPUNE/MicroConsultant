@@ -32,9 +32,6 @@ def get_warehouse_list(warehouses):
 
 	return warehouse_list
 
-@frappe.whitelist()
-def add_items(self,method,warehouse):
-	warehouses = list(set(get_warehouse_list(warehouse)))
 def add_items(self,method):
 	warehouses = self.alt_warehouses.split("/")
 	if (
