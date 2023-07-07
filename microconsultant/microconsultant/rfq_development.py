@@ -103,7 +103,7 @@ def psalt(self,warehouses):
 				it = self.get("mr_items")
 				for d in it[:]:
 					if d.material_request_type == 'Purchase':
-						if d.item_code is in itm:
+						if d.item_code in itm:
 							qty_oh=0.0
 							qty_or=0.0
 							alt_stock=0.0
@@ -143,7 +143,7 @@ def psalt(self,warehouses):
 				it = self.get("mr_items")
 				for d in it[:]:
 					if d.material_request_type == 'Purchase':
-						if d.item_code is in itm:
+						if d.item_code in itm:
 							qty_oh=0.0
 							qty_or=0.0
 							alt_stock=0.0
