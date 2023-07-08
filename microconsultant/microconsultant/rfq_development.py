@@ -61,7 +61,7 @@ def add_items(self,method):
 			for a in altic:
 				for i in warehouses:
 					alt_stocks_w = frappe.db.sql_list("""SELECT projected_qty FROM `tabBin` WHERE item_code=%s and warehouse in %s""",(a,warehouses))
-				alt_stocks = frappe.db.sql_list("""SELECT projected_qty FROM `tabBin` WHERE item_code=%s and warehouse in %s""",(a,warehouses))
+				alt_stocks = frappe.db.sql_list("""SELECT projected_qty FROM `tabBin` WHERE item_code=%s and warehouse ='Stores - M'""",a)
 				for o in alt_stocks:
 					alt_stock = alt_stock + o
 				if alt_stock>0:
