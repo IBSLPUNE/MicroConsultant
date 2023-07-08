@@ -41,7 +41,7 @@ def add_items(self,method):
 			warehouses.remove(self.get("for_warehouse"))
 	stock_dic={}
 	items = self.get("mr_items")
-	psalt(self,warehouses)
+	psalt(self)
 	for d in items[:]:
 		if d.material_request_type == 'Purchase':
 			qty_oh=0.0
@@ -93,8 +93,13 @@ def add_items(self,method):
 					req_qty = abs(req_qty)
 					stock_dic.update({x:req_qty})
 
-def psalt(self,warehouses):
-	frappe.throw(str(warehouses))
+def psalt(self):
+	warehouses = self.alt_warehouses.split("/")
+	if (
+			self.get("for_warehouse")
+			and self.get("for_warehouse") in warehouses
+		):
+			warehouses.remove(self.get("for_warehouse"))
 	stock_dic={}
 	for k in self.get("po_items"):
 		product_specific = frappe.db.sql_list("""SELECT alternatives FROM `tabAlt Items` WHERE parent=%s""",k.item_code)
