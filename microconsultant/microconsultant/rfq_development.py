@@ -94,6 +94,7 @@ def add_items(self,method):
 					stock_dic.update({x:req_qty})
 
 def psalt(self,warehouses):
+	frappe.throw(str(warehouses))
 	stock_dic={}
 	for k in self.get("po_items"):
 		product_specific = frappe.db.sql_list("""SELECT alternatives FROM `tabAlt Items` WHERE parent=%s""",k.item_code)
