@@ -119,12 +119,10 @@ def psalt(self):
 							qty_or=0.0
 							alt_stock=0.0
 							alt_stocks = frappe.db.sql_list("""SELECT projected_qty FROM `tabBin` WHERE item_code=%s and warehouse in %s""",(p,warehouse_list))
-							frappe.errprint(p)
-							frappe.errprint(warehouses)
-							frappe.errprint(alt_stocks)
 							for k in alt_stocks:
 								alt_stock = alt_stock +k
 							if alt_stock>0:
+								frappe.errprint(alt_stock)
 								if d in stock_dic:
 									break
 								stock_dic.update({p:alt_stock})
@@ -132,6 +130,7 @@ def psalt(self):
 									stock_dic.update({p:0})
 								qty_oh = qty_oh + stock_dic[p]
 								qty_or = d.quantity - qty_oh
+								frappe.errprint(qty_or)
 								if qty_or <= 0: 
 									self.remove(d)
 									message = _("As there are sufficient raw materials included, Material Request is not required for Warehouse {0}.").format(d.warehouse) + "<br><br>"
