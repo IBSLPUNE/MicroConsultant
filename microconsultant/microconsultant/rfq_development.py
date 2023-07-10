@@ -105,7 +105,6 @@ def psalt(self):
 			warehouse_list.extend(child_warehouses)
 		else:
 			warehouse_list.append(row.get("warehouse"))
-	warehouse = json.loads(warehouse_list)
 	for k,v in warehouse.items():
 		child_warehouses = frappe.db.get_descendants("Warehouse", v)
 		if child_warehouses:
