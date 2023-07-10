@@ -137,6 +137,7 @@ def psalt(self):
 									frappe.msgprint(message, title=_("Note"))
 								else:
 									d.quantity = qty_or
+									d.alternate_qty = qty_or
 								if qty_or >= 0:
 									stock_dic.update({p:0})
 								else:
