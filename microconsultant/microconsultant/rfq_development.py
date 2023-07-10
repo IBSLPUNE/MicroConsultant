@@ -105,12 +105,6 @@ def psalt(self):
 			warehouse_list.extend(child_warehouses)
 		else:
 			warehouse_list.append(row.get("warehouse"))
-	for k,v in warehouse.items():
-		child_warehouses = frappe.db.get_descendants("Warehouse", v)
-		if child_warehouses:
-			warehouse_list.extend(child_warehouses)
-		else:
-			warehouse_list.append(v)
 	stock_dic={}
 	for k in self.get("po_items"):
 		product_specific = frappe.db.sql_list("""SELECT alternatives FROM `tabAlt Items` WHERE parent=%s""",k.item_code)
