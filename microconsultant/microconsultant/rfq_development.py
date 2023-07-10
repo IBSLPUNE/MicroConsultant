@@ -92,7 +92,7 @@ def add_items(self,method):
 					stock_dic.update({x:req_qty})
 
 def psalt(self):
-	warehouses = self.alt_warehouses.split("/")
+	warehouses = self.alt_warehouses
 	if (
 			self.get("for_warehouse")
 			and self.get("for_warehouse") in warehouses
