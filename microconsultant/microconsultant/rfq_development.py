@@ -98,7 +98,21 @@ def psalt(self):
 			and self.get("for_warehouse") in warehouses
 		):
 			warehouses.remove(self.get("for_warehouse"))
-	frappe.errprint(warehouses)
+	warehouses = json.loads(warehouses)
+	warehouse_list = []
+	for row in warehouses:
+		child_warehouses = frappe.db.get_descendants("Warehouse", row.get("warehouse"))
+		if child_warehouses:
+			warehouse_list.extend(child_warehouses)
+		else:
+			warehouse_list.append(row.get("warehouse"))
+	warehouse = json.loads(warehouse_list)
+	for k,v in warehouse.items():
+		child_warehouses = frappe.db.get_descendants("Warehouse", v)
+		if child_warehouses:
+			warehouse_list.extend(child_warehouses)
+		else:
+			warehouse_list.append(v)
 	stock_dic={}
 	for k in self.get("po_items"):
 		product_specific = frappe.db.sql_list("""SELECT alternatives FROM `tabAlt Items` WHERE parent=%s""",k.item_code)
@@ -112,7 +126,7 @@ def psalt(self):
 							qty_oh=0.0
 							qty_or=0.0
 							alt_stock=0.0
-							alt_stocks = frappe.db.sql_list("""SELECT projected_qty FROM `tabBin` WHERE item_code=%s and warehouse in %s""",(p,warehouses))
+							alt_stocks = frappe.db.sql_list("""SELECT projected_qty FROM `tabBin` WHERE item_code=%s and warehouse in %s""",(p,warehouse_list))
 							frappe.errprint(p)
 							frappe.errprint(warehouses)
 							frappe.errprint(alt_stocks)
@@ -155,7 +169,7 @@ def psalt(self):
 							qty_oh=0.0
 							qty_or=0.0
 							alt_stock=0.0
-							alt_stocks = frappe.db.sql_list("""SELECT projected_qty FROM `tabBin` WHERE item_code=%s and warehouse in %s""",(p,warehouses))
+							alt_stocks = frappe.db.sql_list("""SELECT projected_qty FROM `tabBin` WHERE item_code=%s and warehouse in %s""",(p,warehouse_list))
 							for k in alt_stocks:
 								alt_stock = alt_stock +k
 							if alt_stock>0:
