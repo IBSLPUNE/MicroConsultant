@@ -98,7 +98,6 @@ def psalt(self):
 			and self.get("for_warehouse") in warehouses
 		):
 			warehouses.remove(self.get("for_warehouse"))
-	frappe.throw(warehouses)
 	stock_dic={}
 	for k in self.get("po_items"):
 		product_specific = frappe.db.sql_list("""SELECT alternatives FROM `tabAlt Items` WHERE parent=%s""",k.item_code)
@@ -112,9 +111,9 @@ def psalt(self):
 							qty_oh=0.0
 							qty_or=0.0
 							alt_stock=0.0
-							alt_stocks = frappe.db.sql_list("""SELECT projected_qty FROM `tabBin` WHERE item_code=%s and warehouse in %s""",(p,warehouses))
+							alt_stocks = frappe.db.sql_list("""SELECT projected_qty FROM `tabBin` WHERE item_code=%s and warehouse in %s""",(p,warehouses[0]))
 							frappe.errprint(p)
-							
+							frappe.errprint(warehouses)
 							frappe.errprint(alt_stocks)
 							for k in alt_stocks:
 								alt_stock = alt_stock +k
