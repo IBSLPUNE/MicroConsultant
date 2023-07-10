@@ -92,7 +92,7 @@ def add_items(self,method):
 					stock_dic.update({x:req_qty})
 
 def psalt(self):
-	warehouses = self.alt_warehouses
+	warehouses = json.loads(warehouses)
 	if (
 			self.get("for_warehouse")
 			and self.get("for_warehouse") in warehouses
@@ -114,7 +114,7 @@ def psalt(self):
 							alt_stock=0.0
 							alt_stocks = frappe.db.sql_list("""SELECT projected_qty FROM `tabBin` WHERE item_code=%s and warehouse in %s""",(p,warehouses))
 							frappe.errprint(p)
-							frappe.errprint(warehouses[0])
+							frappe.errprint(warehouses)
 							frappe.errprint(alt_stocks)
 							for k in alt_stocks:
 								alt_stock = alt_stock +k
