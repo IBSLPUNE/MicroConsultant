@@ -98,6 +98,7 @@ def psalt(self):
 			and self.get("for_warehouse") in warehouses
 		):
 			warehouses.remove(self.get("for_warehouse"))
+	frappe.errprint(self.alt_warehouses)
 	stock_dic={}
 	for k in self.get("po_items"):
 		product_specific = frappe.db.sql_list("""SELECT alternatives FROM `tabAlt Items` WHERE parent=%s""",k.item_code)
