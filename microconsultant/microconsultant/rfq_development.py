@@ -122,12 +122,12 @@ def psalt(self):
 							for k in alt_stocks:
 								alt_stock = alt_stock +k
 							if alt_stock>0:
-								frappe.errprint(alt_stock)
 								if d in stock_dic:
 									break
 								stock_dic.update({p:alt_stock})
 								if stock_dic[p] == None :
 									stock_dic.update({p:0})
+								frappe.errprint(stock_dic[p])
 								qty_oh = qty_oh + stock_dic[p]
 								qty_or = d.quantity - qty_oh
 								frappe.errprint(qty_or)
