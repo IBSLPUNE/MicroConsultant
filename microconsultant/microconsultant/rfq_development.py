@@ -98,7 +98,6 @@ def psalt(self):
 			and self.get("for_warehouse") in warehouses
 		):
 			warehouses.remove(self.get("for_warehouse"))
-	warehouses = json.loads(warehouses)
 	warehouse_list = []
 	for row in warehouses:
 		child_warehouses = frappe.db.get_descendants("Warehouse", row.get("warehouse"))
