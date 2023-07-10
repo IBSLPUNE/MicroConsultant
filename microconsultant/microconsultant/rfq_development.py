@@ -111,10 +111,9 @@ def psalt(self):
 							qty_oh=0.0
 							qty_or=0.0
 							alt_stock=0.0
-							alt_stocks = frappe.db.sql_list("""SELECT projected_qty FROM `tabBin` WHERE item_code=%s and warehouse ='Stores - M'""",p)
+							alt_stocks = frappe.db.sql_list("""SELECT projected_qty FROM `tabBin` WHERE item_code=%s and warehouse in %s""",(p,warehouses))
 							frappe.errprint(p)
 							frappe.errprint(alt_stocks)
-							alt_stocks = frappe.db.sql_list("""SELECT projected_qty FROM `tabBin` WHERE item_code=%s and warehouse in %s""",(p,warehouses))
 							for k in alt_stocks:
 								alt_stock = alt_stock +k
 							if alt_stock>0:
