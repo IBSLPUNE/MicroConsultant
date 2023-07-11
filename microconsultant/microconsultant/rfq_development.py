@@ -33,14 +33,19 @@ def get_warehouse_list(warehouses):
 	return warehouse_list
 
 def add_items(self,method):
-	warehouses = self.alt_warehouses.split("/")
+	warehouses = json.loads(str(self.alt_warehouses))
 	if (
 			self.get("for_warehouse")
 			and self.get("for_warehouse") in warehouses
 		):
 			warehouses.remove(self.get("for_warehouse"))
-	stock_dic={}
-	items = self.get("mr_items")
+	warehouse_list = []
+	for row in warehouses:
+		child_warehouses = frappe.db.get_descendants("Warehouse", row.get("warehouse"))
+		if child_warehouses:
+			warehouse_list.extend(child_warehouses)
+		else:
+			warehouse_list.append(row.get("warehouse"))
 	psalt(self)
 	for d in items[:]:
 		if d.material_request_type == 'Purchase':
@@ -59,7 +64,7 @@ def add_items(self,method):
 			altic = frappe.db.get_list('Item Alternative',filters={'item_code':d.item_code,'product_specific_alternatives':0},fields=['alternative_item_code'],pluck='alternative_item_code')
 			qty_oh = 0.0
 			for a in altic:
-				alt_stocks = frappe.db.sql_list("""SELECT projected_qty FROM `tabBin` WHERE item_code=%s and warehouse in %s""",(a,warehouses))
+				alt_stocks = frappe.db.sql_list("""SELECT projected_qty FROM `tabBin` WHERE item_code=%s and warehouse in %s""",(a,warehouse_list))
 				for o in alt_stocks:
 					alt_stock = alt_stock + o
 				if alt_stock>0:
