@@ -48,6 +48,7 @@ def add_items(self,method):
 			warehouse_list.append(row.get("warehouse"))
 	psalt(self)
 	items = self.get("mr_items")
+	stock_dic={}
 	for d in items[:]:
 		if d.material_request_type == 'Purchase':
 			qty_oh=0.0
