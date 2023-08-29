@@ -22,6 +22,7 @@ def alt_items(self, method):
 						items.required_qty = rq
 						d.required_qty = d.required_qty - items.required_qty
 						items.idx = d.idx + 1
+						items.source_warehouse = d.source_warehouse 
 						items.alternate = 1
 						for i in rq_items[:]:
 							if i.idx >= d.idx +1:
