@@ -89,8 +89,5 @@ def ps_alt(self):
 							items.alternate_of = d.item_code				
 							items.idx = d.idx + 1
 							items.insert()
-<<<<<<< HEAD
 							stock_dict.update({x:0})
-=======
 							stock_dict.update({x:0})
->>>>>>> 94b0e73eece01e1ac40c87cc6f50d443b3f24781
