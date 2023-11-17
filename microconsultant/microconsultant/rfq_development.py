@@ -33,20 +33,21 @@ def get_warehouse_list(warehouses):
 	return warehouse_list
 
 def add_items(self,method):
-	warehouses = json.loads(str(self.alt_warehouses))
-	if (
-			self.get("for_warehouse")
-			and self.get("for_warehouse") in warehouses
-		):
-			warehouses.remove(self.get("for_warehouse"))
-	warehouse_list = []
-	for row in warehouses:
-		child_warehouses = frappe.db.get_descendants("Warehouse", row.get("warehouse"))
-		if child_warehouses:
-			warehouse_list.extend(child_warehouses)
-		else:
-			warehouse_list.append(row.get("warehouse"))
+	# warehouses = json.loads(str(self.alt_warehouses))
+	# if (
+	# 		self.get("for_warehouse")
+	# 		and self.get("for_warehouse") in warehouses
+	# 	):
+	# 		warehouses.remove(self.get("for_warehouse"))
+	# warehouse_list = []
+	# for row in warehouses:
+	# 	child_warehouses = frappe.db.get_descendants("Warehouse", row.get("warehouse"))
+	# 	if child_warehouses:
+	# 		warehouse_list.extend(child_warehouses)
+	# 	else:
+	# 		warehouse_list.append(row.get("warehouse"))
 	psalt(self)
+	add_required_items(self)
 	items = self.get("mr_items")
 	stock_dic={}
 	for d in items[:]:
@@ -66,7 +67,7 @@ def add_items(self,method):
 			altic = frappe.db.get_list('Item Alternative',filters={'item_code':d.item_code,'product_specific_alternatives':0},fields=['alternative_item_code'],pluck='alternative_item_code')
 			qty_oh = 0.0
 			for a in altic:
-				alt_stocks = frappe.db.sql_list("""SELECT projected_qty FROM `tabBin` WHERE item_code=%s and warehouse in %s""",(a,warehouse_list))
+				alt_stocks = frappe.db.sql_list("""SELECT projected_qty FROM `tabBin` WHERE item_code=%s and warehouse = %s""",(a,self.for_warehouse))
 				for o in alt_stocks:
 					alt_stock = alt_stock + o
 				if alt_stock>0:
@@ -99,19 +100,19 @@ def add_items(self,method):
 					stock_dic.update({x:req_qty})
 
 def psalt(self):
-	warehouses = json.loads(str(self.alt_warehouses))
-	if (
-			self.get("for_warehouse")
-			and self.get("for_warehouse") in warehouses
-		):
-			warehouses.remove(self.get("for_warehouse"))
-	warehouse_list = []
-	for row in warehouses:
-		child_warehouses = frappe.db.get_descendants("Warehouse", row.get("warehouse"))
-		if child_warehouses:
-			warehouse_list.extend(child_warehouses)
-		else:
-			warehouse_list.append(row.get("warehouse"))
+	# warehouses = json.loads(str(self.alt_warehouses))
+	# if (
+	# 		self.get("for_warehouse")
+	# 		and self.get("for_warehouse") in warehouses
+	# 	):
+	# 		warehouses.remove(self.get("for_warehouse"))
+	# warehouse_list = []
+	# for row in warehouses:
+	# 	child_warehouses = frappe.db.get_descendants("Warehouse", row.get("warehouse"))
+	# 	if child_warehouses:
+	# 		warehouse_list.extend(child_warehouses)
+	# 	else:
+	# 		warehouse_list.append(row.get("warehouse"))
 	stock_dic={}
 	for k in self.get("po_items"):
 		product_specific = frappe.db.sql_list("""SELECT alternatives FROM `tabAlt Items` WHERE parent=%s""",k.item_code)
@@ -125,7 +126,7 @@ def psalt(self):
 							qty_oh=0.0
 							qty_or=0.0
 							alt_stock=0.0
-							alt_stocks = frappe.db.sql_list("""SELECT projected_qty FROM `tabBin` WHERE item_code=%s and warehouse in %s""",(p,warehouse_list))
+							alt_stocks = frappe.db.sql_list("""SELECT projected_qty FROM `tabBin` WHERE item_code=%s and warehouse = %s""",(p,self.for_warehouse))
 							for k in alt_stocks:
 								alt_stock = alt_stock +k
 							if alt_stock>0:
@@ -168,7 +169,7 @@ def psalt(self):
 							qty_oh=0.0
 							qty_or=0.0
 							alt_stock=0.0
-							alt_stocks = frappe.db.sql_list("""SELECT projected_qty FROM `tabBin` WHERE item_code=%s and warehouse in %s""",(p,warehouse_list))
+							alt_stocks = frappe.db.sql_list("""SELECT projected_qty FROM `tabBin` WHERE item_code=%s and warehouse = %s""",(p,self.for_warehouse))
 							for k in alt_stocks:
 								alt_stock = alt_stock +k
 							if alt_stock>0:
@@ -198,8 +199,67 @@ def psalt(self):
 									stock_dic.update({x:req_qty})
 
 
+def add_required_items(self):
+	stocks = 0
+	stock_dict = {}
+	products = {}
+	for i in self.get("po_items"):
+		products[i.item_code] = {"BOM":i.bom_no,"QTY":i.planned_qty}
+	for i in self.get("sub_assembly_items"):
+		if i in products:
+			products[i.item_code] = {"BOM":i.bom_no,"QTY":i.qty}
+	for i in products:
+		bom = frappe.get_doc("BOM",products[i]["BOM"])
+		for d in bom.get("items"):
+			stocks = frappe.db.get_value("Bin",{'item_code':d.item_code,'warehouse':self.for_warehouse},"projected_qty")
+			qty = (products[i]["QTY"] / bom.quantity) * d.qty
+			if stocks >= 0:
+				if (stocks - qty) >= 0:
+					self.append("required_materials",{
+						"item_code":d.item_code,
+						"required_qty":qty,
+						"from_warehouse":self.for_warehouse
+						})
+				else:
+					self.append("required_materials",{
+						"item_code":d.item_code,
+						"required_qty":qty,
+						"from_warehouse":self.for_warehouse
+						})
+					remaining_qty = qty - stocks
+					altic = frappe.db.get_list('Item Alternative',filters={'item_code':d.item_code,'product_specific_alternatives':0},fields=['alternative_item_code'],pluck='alternative_item_code')
+					qty_oh = 0.0
+					for a in altic:
+						alt_stock = frappe.db.get_value("Bin",{'item_code':a,'warehouse':self.for_warehouse},"projected_qty")
+						if a not in stock_dict and alt_stock >0:
+							stock_dict.append({a:alt_stock})
+					## Product Specific
+					product_specific = frappe.db.sql_list("""SELECT alternatives FROM `tabAlt Items` WHERE parent=%s""",i)
+					for p in product_specific:
+						itm = frappe.db.sql_list("""SELECT item_code FROM `tabItem Alternative` WHERE alternative_item_code = %s AND product_specific_alternatives=1""",p)
+						if i in itm:
+							alt_stock = frappe.db.get_value("Bin",{'item_code':p,'warehouse':self.for_warehouse},"projected_qty")
+							if p not in stock_dict and alt_stock >0:
+								stock_dict.append({p:alt_stock})
+					## Product Specific End
+					sorted_stock ={k: v for k,v in sorted(stock_dict.items(), key= lambda v: v[1])}
+					for x,y in sorted_stock.items():
+						remaining_qty -= y
+						if remaining_qty>=0:
+							self.append("required_materials",{
+								"item_code":x,
+								"required_qty":y,
+								"from_warehouse":self.for_warehouse
+								})
+						else:
+							self.append("required_materials",{
+								"item_code":x,
+								"required_qty":y- abs(remaining_qty),
+								"from_warehouse":self.for_warehouse
+								})
 
-			
+
+
 
 
 		
