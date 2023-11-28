@@ -4,6 +4,7 @@ def alt_items(self, method):
 	stock_dict={}
 	rq_items = self.get('required_items')
 	for d in rq_items[:]:
+		frappe.errprint(d.item_code)
 		if d.alternate ==0:
 			if d.available_qty_at_source_warehouse<d.required_qty:
 				rq = d.required_qty - d.available_qty_at_source_warehouse
@@ -13,7 +14,7 @@ def alt_items(self, method):
 					if alt_stock >0:
 						stock_dict.update({a:alt_stock})
 				sorted_stock ={k: v for k,v in sorted(stock_dict.items(), key= lambda v: v[1])}
-				frappe.errprint("sortted_stock":sorted_stock)
+				frappe.errprint(sorted_stock)
 				for x,y in sorted_stock.items():
 					rqp = rq - y
 					if rqp<= 0:
