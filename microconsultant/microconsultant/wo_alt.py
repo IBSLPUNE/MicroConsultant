@@ -4,9 +4,10 @@ def alt_items(self, method):
 	stock_dict={}
 	rq_items = self.get('required_items')
 	for d in rq_items[:]:
-		frappe.errprint(d.item_code)
 		if d.alternate ==0:
+			frappe.errprint("Entered First If")
 			if d.available_qty_at_source_warehouse<d.required_qty:
+				frappe.errprint("Entered Second If")
 				rq = d.required_qty - d.available_qty_at_source_warehouse
 				altic = frappe.db.get_list('Item Alternative',filters={'item_code':d.item_code,'product_specific_alternatives':0},fields=['alternative_item_code'],pluck='alternative_item_code')
 				for a in altic:
