@@ -2,9 +2,8 @@ import frappe
 
 def alt_items(self, method):
 	stock_dict={}
-	rq_items = self.get('required_items')
-	for d in rq_items[:]:
-		if d.alternate ==0:
+	for d in self.get('required_items'):
+		if d.alternate == 0:
 			frappe.errprint("Entered First If")
 			if d.available_qty_at_source_warehouse<d.required_qty:
 				frappe.errprint("Entered Second If")
@@ -51,8 +50,7 @@ def alt_items(self, method):
 
 def ps_alt(self):
 	stock_dict={}
-	rq_items = self.get('required_items')
-	for d in rq_items[:]:
+	for d in self.get('required_items'):
 		product_specific = frappe.db.sql_list("""SELECT alternatives FROM `tabAlt Items` WHERE parent=%s""",self.production_item)
 		if d.available_qty_at_source_warehouse<d.required_qty:
 			rq = d.required_qty - d.available_qty_at_source_warehouse
