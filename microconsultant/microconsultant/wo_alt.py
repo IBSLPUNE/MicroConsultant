@@ -13,6 +13,7 @@ def alt_items(self, method):
 					if alt_stock >0:
 						stock_dict.update({a:alt_stock})
 				sorted_stock ={k: v for k,v in sorted(stock_dict.items(), key= lambda v: v[1])}
+				frappe.errprint("sortted_stock":sorted_stock)
 				for x,y in sorted_stock.items():
 					rqp = rq - y
 					if rqp<= 0:
