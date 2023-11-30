@@ -47,7 +47,7 @@ def alt_items(self, method):
 							d.required_qty = d.required_qty - items.required_qty
 							for i in rq_items[:]:
 								if i.idx >= d.idx +1:
-								i.idx=i.idx +1
+									i.idx=i.idx +1
 							items.alternate_of = d.item_code
 							items.idx = d.idx + 1
 							# items.insert()
