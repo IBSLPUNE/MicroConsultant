@@ -2,8 +2,8 @@ import frappe
 
 def alt_items(self, method):
 	stock_dict={}
+	rq_items = self.get("required_items")
 	for d in self.get('required_items'):
-		frappe.errprint(d.alternate)
 		if d.alternate == 0:
 			frappe.errprint("Entered First If")
 			if d.available_qty_at_source_warehouse<d.required_qty:
@@ -31,7 +31,7 @@ def alt_items(self, method):
 							if i.idx >= d.idx +1:
 								i.idx=i.idx +1
 						items.alternate_of = d.item_code
-						items.insert()
+						# items.insert()
 						inventory = y-rq
 						stock_dict.update({x:inventory})
 					elif y>0:
@@ -46,7 +46,7 @@ def alt_items(self, method):
 								i.idx=i.idx +1
 						items.alternate_of = d.item_code
 						items.idx = d.idx + 1
-						items.insert()
+						# items.insert()
 						stock_dict.update({x:0})
 
 def ps_alt(self):
@@ -76,7 +76,7 @@ def ps_alt(self):
 								if i.idx >= d.idx +1:
 									i.idx = i.idx +1
 							items.alternate_of = d.item_code
-							items.insert()
+							# items.insert()
 							inventory = y-rq
 							stock_dict.update({x:inventory})
 						elif y>0:
@@ -91,6 +91,6 @@ def ps_alt(self):
 									i.idx=i.idx +1
 							items.alternate_of = d.item_code				
 							items.idx = d.idx + 1
-							items.insert()
+							# items.insert()
 							stock_dict.update({x:0})
 							stock_dict.update({x:0})
