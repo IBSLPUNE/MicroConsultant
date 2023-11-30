@@ -11,7 +11,7 @@ def alt_items(self, method):
 				rq = d.required_qty - d.available_qty_at_source_warehouse
 				altic = frappe.db.get_list('Item Alternative',filters={'item_code':d.item_code,'product_specific_alternatives':0},fields=['alternative_item_code'],pluck='alternative_item_code')
 				for a in altic:
-					if frappe.db.exist('Bin',{'item_code':a,'warehouse':d.source_warehouse}):
+					if frappe.db.exists('Bin',{'item_code':a,'warehouse':d.source_warehouse}):
 						alt_stock = frappe.db.get_value('Bin',{'item_code':a,'warehouse':d.source_warehouse},'projected_qty')
 						if alt_stock > 0:
 							stock_dict.update({a:alt_stock})
