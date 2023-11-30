@@ -3,6 +3,7 @@ import frappe
 def alt_items(self, method):
 	stock_dict={}
 	for d in self.get('required_items'):
+		frappe.errprint(d.alternate)
 		if d.alternate == 0:
 			frappe.errprint("Entered First If")
 			if d.available_qty_at_source_warehouse<d.required_qty:
