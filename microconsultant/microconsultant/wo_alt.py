@@ -5,17 +5,17 @@ def alt_items(self, method):
 	rq_items = self.get("required_items")
 	for d in self.get('required_items'):
 		if d.alternate == 0:
-			frappe.errprint("Entered First If")
+			frappe.errprint(d.item_code)
 			if d.available_qty_at_source_warehouse<d.required_qty:
 				frappe.errprint("Entered Second If")
 				rq = d.required_qty - d.available_qty_at_source_warehouse
 				altic = frappe.db.get_list('Item Alternative',filters={'item_code':d.item_code,'product_specific_alternatives':0},fields=['alternative_item_code'],pluck='alternative_item_code')
 				for a in altic:
+					alt_stock = 0
 					alt_stock = frappe.db.get_value('Bin',{'item_code':a,'warehouse':d.source_warehouse},'projected_qty')
 					if alt_stock >0:
 						stock_dict.update({a:alt_stock})
 				sorted_stock ={k: v for k,v in sorted(stock_dict.items(), key= lambda v: v[1])}
-				frappe.errprint(sorted_stock)
 				for x,y in sorted_stock.items():
 					rqp = rq - y
 					if rqp<= 0:
