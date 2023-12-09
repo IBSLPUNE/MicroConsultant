@@ -112,7 +112,7 @@ doc_events = {
     "after_insert": "microconsultant.microconsultant.rfq_development.rfq_items",
     },
   "Work Order": {
-    "before_save": "microconsultant.microconsultant.wo_alt.alt_items"
+    "before_submit": "microconsultant.microconsultant.wo_alt.alt_items"
     },
     "Supplier Quotation": {
     "before_save": "microconsultant.microconsultant.supplier_quotation.filter_items",
