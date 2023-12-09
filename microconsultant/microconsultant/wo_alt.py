@@ -38,6 +38,7 @@ def alt_items(self, method):
 						# items.insert()
 							inventory = y-rq
 							stock_dict.update({x:inventory})
+							items.insert()
 						elif y>0:
 							item = frappe.get_doc(self)
 							items = item.append('required_items',{})
@@ -52,6 +53,7 @@ def alt_items(self, method):
 							items.idx = d.idx + 1
 							# items.insert()
 							stock_dict.update({x:0})
+							items.insert()
 
 def ps_alt(self):
 	stock_dict={}
@@ -87,6 +89,7 @@ def ps_alt(self):
 								# items.insert()
 								inventory = y-rq
 								stock_dict.update({x:inventory})
+								items.insert()
 							elif y>0:
 								item = frappe.get_doc(self)
 								items = item.append('required_items',{})
@@ -101,4 +104,4 @@ def ps_alt(self):
 								items.idx = d.idx + 1
 								# items.insert()
 								stock_dict.update({x:0})
-								stock_dict.update({x:0})
+								items.insert()
