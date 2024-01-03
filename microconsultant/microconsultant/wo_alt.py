@@ -50,6 +50,7 @@ def alt_items(self, method):
 								if i.idx >= d.idx +1:
 									i.idx=i.idx +1
 							items.alternate_of = d.item_code
+							items.source_warehouse = d.source_warehouse
 							items.idx = d.idx + 1
 							# items.insert()
 							stock_dict.update({x:0})
@@ -82,6 +83,7 @@ def ps_alt(self):
 								items.idx = d.idx + 1
 								d.required_qty = d.required_qty - items.required_qty
 								items.alternate = 1
+								items.source_warehouse = d.source_warehouse
 								for i in rq_items[:]:
 									if i.idx >= d.idx +1:
 										i.idx = i.idx +1
@@ -96,6 +98,7 @@ def ps_alt(self):
 								items.item_code = x
 								items.alternate = 1
 								items.required_qty = y
+								items.source_warehouse = d.source_warehouse
 								d.required_qty = d.required_qty - items.required_qty
 								for i in rq_items[:]:
 									if i.idx >= d.idx +1:
