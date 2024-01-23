@@ -108,3 +108,20 @@ def ps_alt(self):
 									# items.insert()
 									stock_dict.update({x:0})
 									items.insert()
+
+def stock_entry(self,method):
+	wo = frappe.get_doc("Work Order",self.work_order)
+	rq_items = self.get('items')
+	for i in wo.get('required_items'):
+		for d in self.get('items'):
+			if i.item_code != d.item_code:
+				item = frappe.get_doc(self)
+				items = item.append('items',{})
+				items.item_code = i.item_code
+				items.custom_alternate = 1
+				items.qty = i.required_qty
+				items.s_warehouse = i.source_warehouse
+				items.custom_alternate_of = d.item_code				
+				items.idx = d.idx + 1
+				# items.insert()
+				items.insert()
