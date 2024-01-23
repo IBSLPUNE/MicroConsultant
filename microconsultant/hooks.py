@@ -117,6 +117,9 @@ doc_events = {
     "Supplier Quotation": {
     "before_save": "microconsultant.microconsultant.supplier_quotation.filter_items",
     },
+    "Stock Entry": {
+     "before_save":"microconsultant.microconsultant.wo_alt.stock_entry"
+    }
   }
 
 
