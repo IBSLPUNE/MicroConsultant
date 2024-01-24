@@ -27,12 +27,9 @@ def alt_items(self, method):
 								items.item_code = x
 								items.required_qty = rq
 								d.required_qty = d.required_qty - items.required_qty
-								items.idx = d.idx + 1
+								items.idx = d.idx
 								items.source_warehouse = d.source_warehouse 
 								items.alternate = 1
-								for i in rq_items[:]:
-									if i.idx >= d.idx +1:
-										i.idx=i.idx +1
 								items.alternate_of = d.item_code
 							# items.insert()
 								inventory = y-rq
@@ -45,12 +42,9 @@ def alt_items(self, method):
 								items.alternate = 1
 								items.required_qty = y
 								d.required_qty = d.required_qty - items.required_qty
-								for i in rq_items[:]:
-									if i.idx >= d.idx +1:
-										i.idx=i.idx +1
 								items.alternate_of = d.item_code
 								items.source_warehouse = d.source_warehouse
-								items.idx = d.idx + 1
+								items.idx = d.idx
 								# items.insert()
 								stock_dict.update({x:0})
 								items.insert()
@@ -80,13 +74,10 @@ def ps_alt(self):
 									items = item.append('required_items',{})
 									items.item_code = x
 									items.required_qty = rq
-									items.idx = d.idx + 1
+									items.idx = d.idx
 									d.required_qty = d.required_qty - items.required_qty
 									items.alternate = 1
 									items.source_warehouse = d.source_warehouse
-									for i in rq_items[:]:
-										if i.idx >= d.idx +1:
-											i.idx = i.idx +1
 									items.alternate_of = d.item_code
 									# items.insert()
 									inventory = y-rq
@@ -100,11 +91,8 @@ def ps_alt(self):
 									items.required_qty = y
 									items.source_warehouse = d.source_warehouse
 									d.required_qty = d.required_qty - items.required_qty
-									for i in rq_items[:]:
-										if i.idx >= d.idx +1:
-											i.idx=i.idx +1
 									items.alternate_of = d.item_code				
-									items.idx = d.idx + 1
+									items.idx = d.idx
 									# items.insert()
 									stock_dict.update({x:0})
 									items.insert()
@@ -122,7 +110,7 @@ def stock_entry(self,method):
 				items.qty = i.required_qty
 				items.s_warehouse = i.source_warehouse
 				items.custom_alternate_of = d.item_code				
-				items.idx = d.idx + 1
+				items.idx = d.idx
 				# items.insert()
 				item.set_missing_values()
 				items.insert()
