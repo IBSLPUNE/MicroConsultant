@@ -110,7 +110,6 @@ def stock_entry(self,method):
 				items.qty = i.required_qty
 				items.s_warehouse = i.source_warehouse
 				items.custom_alternate_of = d.item_code				
-				items.idx = d.idx
 				# items.insert()
 				item.set_missing_values()
 				items.insert()
