@@ -113,6 +113,6 @@ def stock_entry(self,method):
 				# items.insert()
 				items.uom = frappe.db.get_value("Item",i.item_code,"stock_uom")
 				items.stock_uom = frappe.db.get_value("Item",i.item_code,"stock_uom")
-				frappe.errprint(items.item_code)
+				frappe.errprint(i.item_code)
 				item.set_missing_values()
 				items.insert()
