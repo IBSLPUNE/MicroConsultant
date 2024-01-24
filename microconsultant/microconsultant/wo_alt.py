@@ -114,7 +114,7 @@ def stock_entry(self,method):
 	rq_items = self.get('items')
 	for i in wo.get('required_items'):
 		for d in self.get('items'):
-			if i.item_code != d.item_code:
+			if i.item_code != d.item_code and i.required_qty !=0:
 				item = frappe.get_doc(self)
 				items = item.append('items',{})
 				items.item_code = i.item_code
