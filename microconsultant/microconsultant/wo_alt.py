@@ -124,4 +124,5 @@ def stock_entry(self,method):
 				items.custom_alternate_of = d.item_code				
 				items.idx = d.idx + 1
 				# items.insert()
+				item.set_missing_values()
 				items.insert()
