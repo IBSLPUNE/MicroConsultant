@@ -114,6 +114,6 @@ def stock_entry(self,method):
 			# items.insert()
 			items.uom = frappe.db.get_value("Item",i.item_code,"stock_uom")
 			items.stock_uom = frappe.db.get_value("Item",i.item_code,"stock_uom")
-			items.conversion_factor = frappe.db.get_value("UOM Conversion Detail",{"parent":i.item_code,"uom":frappe.db.get_value("Item",i.item_code,"stock_uom"),"conversion_factor")
+			items.conversion_factor = frappe.db.get_value("UOM Conversion Detail",{"parent":i.item_code,"uom":frappe.db.get_value("Item",i.item_code,"stock_uom")},"conversion_factor")
 			item.set_missing_values()
 			items.insert()
