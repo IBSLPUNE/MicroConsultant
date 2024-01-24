@@ -99,20 +99,21 @@ def ps_alt(self):
 
 def stock_entry(self,method):
 	wo = frappe.get_doc("Work Order",self.work_order)
-	rq_items = self.get('items')
+	item_list = {}
+	for d in self.get('items'):
+		item_list.append(d.item_code)
 	for i in wo.get('required_items'):
-		for d in self.get('items'):
-			if i.item_code != d.item_code and i.required_qty !=0:
-				item = frappe.get_doc(self)
-				items = item.append('items',{})
-				items.item_code = i.item_code
-				items.custom_alternate = 1
-				items.qty = i.required_qty
-				items.s_warehouse = i.source_warehouse
-				items.custom_alternate_of = d.item_code				
-				# items.insert()
-				items.uom = frappe.db.get_value("Item",i.item_code,"stock_uom")
-				items.stock_uom = frappe.db.get_value("Item",i.item_code,"stock_uom")
-				frappe.errprint(i.item_code)
-				item.set_missing_values()
-				items.insert()
+		if i.item_code not in item_list and i.required_qty >0:
+			item = frappe.get_doc(self)
+			items = item.append('items',{})
+			items.item_code = i.item_code
+			items.custom_alternate = 1
+			items.qty = i.required_qty
+			items.s_warehouse = i.source_warehouse
+			items.custom_alternate_of = d.item_code				
+			# items.insert()
+			items.uom = frappe.db.get_value("Item",i.item_code,"stock_uom")
+			items.stock_uom = frappe.db.get_value("Item",i.item_code,"stock_uom")
+			frappe.errprint(i.item_code)
+			item.set_missing_values()
+			items.insert()
