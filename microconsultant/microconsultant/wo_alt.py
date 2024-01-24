@@ -112,4 +112,5 @@ def stock_entry(self,method):
 				items.custom_alternate_of = d.item_code				
 				# items.insert()
 				item.set_missing_values()
+				frappe.errprint(items.item_code)
 				items.insert()
