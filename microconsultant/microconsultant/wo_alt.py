@@ -110,7 +110,7 @@ def stock_entry(self,method):
 			items.custom_alternate = 1
 			items.qty = i.required_qty
 			items.s_warehouse = i.source_warehouse
-			items.custom_alternate_of = d.item_code				
+			items.custom_alternate_of = i.alternate_of			
 			# items.insert()
 			items.uom = frappe.db.get_value("Item",i.item_code,"stock_uom")
 			items.stock_uom = frappe.db.get_value("Item",i.item_code,"stock_uom")
