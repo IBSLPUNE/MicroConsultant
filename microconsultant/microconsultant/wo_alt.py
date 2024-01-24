@@ -99,7 +99,7 @@ def ps_alt(self):
 
 def stock_entry(self,method):
 	wo = frappe.get_doc("Work Order",self.work_order)
-	item_list = {}
+	item_list = []
 	for d in self.get('items'):
 		item_list.append(d.item_code)
 	for i in wo.get('required_items'):
