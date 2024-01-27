@@ -3,6 +3,7 @@ import frappe
 def alt_items(self, method):
 	stock_dict={}
 	rq_items = self.get("required_items")
+	ps_alt(self)
 	for d in self.get('required_items'):
 		if d.alternate == 0:
 			if d.available_qty_at_source_warehouse<d.required_qty:
