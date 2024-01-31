@@ -29,7 +29,8 @@ def alt_items(self, method):
 								items.required_qty = rq
 								d.required_qty = d.required_qty - items.required_qty
 								items.idx = d.idx
-								items.source_warehouse = d.source_warehouse 
+								items.source_warehouse = d.source_warehouse
+								items.available_qty_at_source_warehouse = frappe.db.get_value("Bin",{"warehouse":items.source_warehouse,"item_code":items.item_code},"actual_qty")
 								items.alternate = 1
 								items.alternate_of = d.item_code
 							# items.insert()
@@ -45,6 +46,7 @@ def alt_items(self, method):
 								d.required_qty = d.required_qty - items.required_qty
 								items.alternate_of = d.item_code
 								items.source_warehouse = d.source_warehouse
+								items.available_qty_at_source_warehouse = frappe.db.get_value("Bin",{"warehouse":items.source_warehouse,"item_code":items.item_code},"actual_qty")
 								items.idx = d.idx
 								# items.insert()
 								stock_dict.update({x:0})
@@ -80,6 +82,7 @@ def ps_alt(self):
 									items.alternate = 1
 									items.source_warehouse = d.source_warehouse
 									items.alternate_of = d.item_code
+									items.available_qty_at_source_warehouse = frappe.db.get_value("Bin",{"warehouse":items.source_warehouse,"item_code":items.item_code},"actual_qty")
 									# items.insert()
 									inventory = y-rq
 									stock_dict.update({x:inventory})
@@ -92,7 +95,8 @@ def ps_alt(self):
 									items.required_qty = y
 									items.source_warehouse = d.source_warehouse
 									d.required_qty = d.required_qty - items.required_qty
-									items.alternate_of = d.item_code				
+									items.alternate_of = d.item_code
+									items.available_qty_at_source_warehouse = frappe.db.get_value("Bin",{"warehouse":items.source_warehouse,"item_code":items.item_code},"actual_qty")
 									items.idx = d.idx
 									# items.insert()
 									stock_dict.update({x:0})
