@@ -436,19 +436,19 @@ def rfq_sorting(self):
 	doc.save()
 
 
-def product(self):
-	products = []
-	for item in self.get('products'):
-		for a in self.get('items'):
-			item_list = frappe.db.get_list('BOM Item',filters= {
-				'parent':item.bom_no,
-				}
-				,pluck= 'item_code',fields ='item_code')
-			for bom_item in item_list:
-				if bom_item == a.item_code:
-					if a.product_name is not None:
-						a.product_name = a.product_name + '\n' + item.item_code
-					else:
-						a.product_name = "TEXT"
-	doc = frappe.get_doc(self)
-	doc.save()
+# def product(self):
+# 	products = []
+# 	for item in self.get('products'):
+# 		for a in self.get('items'):
+# 			item_list = frappe.db.get_list('BOM Item',filters= {
+# 				'parent':item.bom_no,
+# 				}
+# 				,pluck= 'item_code',fields ='item_code')
+# 			for bom_item in item_list:
+# 				if bom_item == a.item_code:
+# 					if a.product_name is not None:
+# 						a.product_name = a.product_name + '\n' + item.item_code
+# 					else:
+# 						a.product_name = "TEXT"
+# 	doc = frappe.get_doc(self)
+# 	doc.save()
