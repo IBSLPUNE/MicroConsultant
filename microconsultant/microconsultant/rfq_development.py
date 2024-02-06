@@ -333,7 +333,7 @@ def rfq_ps(self):
 			items.planned_qty = i.planned_qty
 			items.planned_start_date = i.planned_start_date
 			items.insert()
-		product(self)
+		# product(self)
 		products = self.get("products")
 		for a in products[:]:
 			product_specific = frappe.db.sql_list("""SELECT alternatives FROM `tabAlt Items` WHERE parent=%s""",a.item_code)
