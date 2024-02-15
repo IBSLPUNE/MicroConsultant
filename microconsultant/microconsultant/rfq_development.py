@@ -232,7 +232,7 @@ def add_required_items(self):
 					for a in altic:
 						alt_stock = frappe.db.get_value("Bin",{'item_code':a,'warehouse':self.for_warehouse},"projected_qty")
 						if a not in stock_dict and alt_stock >0:
-							stock_dict.append({a:alt_stock})
+							stock_dict.update({a:alt_stock})
 					## Product Specific
 					product_specific = frappe.db.sql_list("""SELECT alternatives FROM `tabAlt Items` WHERE parent=%s""",i)
 					for p in product_specific:
@@ -240,7 +240,7 @@ def add_required_items(self):
 						if i in itm:
 							alt_stock = frappe.db.get_value("Bin",{'item_code':p,'warehouse':self.for_warehouse},"projected_qty")
 							if p not in stock_dict and alt_stock >0:
-								stock_dict.append({p:alt_stock})
+								stock_dict.update({p:alt_stock})
 					## Product Specific End
 					sorted_stock ={k: v for k,v in sorted(stock_dict.items(), key= lambda v: v[1])}
 					for x,y in sorted_stock.items():
