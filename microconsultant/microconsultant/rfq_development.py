@@ -47,7 +47,7 @@ def add_items(self,method):
 	# 	else:
 	# 		warehouse_list.append(row.get("warehouse"))
 	psalt(self)
-	add_required_items(self)
+	# add_required_items(self)
 	items = self.get("mr_items")
 	stock_dic={}
 	for d in items[:]:
