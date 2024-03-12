@@ -56,6 +56,8 @@ def ps_alt(self):
 	stock_dict={}
 	for d in self.get('required_items'):
 		product_specific = frappe.db.sql_list("""SELECT alternatives FROM `tabAlt Items` WHERE parent=%s""",self.production_item)
+		if d.available_qty_at_source_warehouse == None:
+			d.available_qty_at_source_warehouse = 0
 		if d.available_qty_at_source_warehouse<d.required_qty:
 			rq = d.required_qty - d.available_qty_at_source_warehouse
 			altic = frappe.db.get_list('Item Alternative',filters={'item_code':d.item_code,'product_specific_alternatives':1},fields=['alternative_item_code'],pluck='alternative_item_code')
