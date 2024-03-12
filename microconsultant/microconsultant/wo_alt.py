@@ -108,10 +108,9 @@ def stock_entry(self,method):
 	wo = frappe.get_doc("Work Order",self.work_order)
 	item_list = []
 	for d in self.get('items'):
-		if d.actual_qty >0:
-			item_list.append(d.item_code)
+		item_list.append(d.item_code)
 	for i in wo.get('required_items'):
-		if i.item_code not in item_list and i.required_qty >0:
+		if i.item_code not in item_list and i.required_qty >0 and i.available_qty_at_source_warehouse >0:
 			item = frappe.get_doc(self)
 			items = item.append('items',{})
 			items.item_code = i.item_code
