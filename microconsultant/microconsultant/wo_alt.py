@@ -105,23 +105,24 @@ def ps_alt(self):
 									items.insert()
 
 def stock_entry(self,method):
-	wo = frappe.get_doc("Work Order",self.work_order)
-	item_list = []
-	for d in self.get('items'):
-		item_list.append(d.item_code)
-	for i in wo.get('required_items'):
-		if i.item_code not in item_list and i.required_qty >0 and i.available_qty_at_source_warehouse >0:
-			item = frappe.get_doc(self)
-			items = item.append('items',{})
-			items.item_code = i.item_code
-			items.custom_alternate = 1
-			items.qty = i.required_qty
-			items.s_warehouse = i.source_warehouse
-			items.custom_alternate_of = i.alternate_of			
-			# items.insert()
-			items.uom = frappe.db.get_value("Item",i.item_code,"stock_uom")
-			items.stock_uom = frappe.db.get_value("Item",i.item_code,"stock_uom")
-			items.t_warehouse = self.to_warehouse
-			items.conversion_factor = frappe.db.get_value("UOM Conversion Detail",{"parent":i.item_code,"uom":frappe.db.get_value("Item",i.item_code,"stock_uom")},"conversion_factor")
-			item.set_missing_values()
-			items.insert()
+	if self.work_order:
+		wo = frappe.get_doc("Work Order",self.work_order)
+		item_list = []
+		for d in self.get('items'):
+			item_list.append(d.item_code)
+		for i in wo.get('required_items'):
+			if i.item_code not in item_list and i.required_qty >0 and i.available_qty_at_source_warehouse >0:
+				item = frappe.get_doc(self)
+				items = item.append('items',{})
+				items.item_code = i.item_code
+				items.custom_alternate = 1
+				items.qty = i.required_qty
+				items.s_warehouse = i.source_warehouse
+				items.custom_alternate_of = i.alternate_of			
+				# items.insert()
+				items.uom = frappe.db.get_value("Item",i.item_code,"stock_uom")
+				items.stock_uom = frappe.db.get_value("Item",i.item_code,"stock_uom")
+				items.t_warehouse = self.to_warehouse
+				items.conversion_factor = frappe.db.get_value("UOM Conversion Detail",{"parent":i.item_code,"uom":frappe.db.get_value("Item",i.item_code,"stock_uom")},"conversion_factor")
+				item.set_missing_values()
+				items.insert()
