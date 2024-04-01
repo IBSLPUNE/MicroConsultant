@@ -105,6 +105,7 @@ def update(doc_name):
 								# items.insert()
 								stock_dict.update({x:0})
 								items.insert()
+	self.save()
 								
 def ps_alt(self):
 	stock_dict={}
