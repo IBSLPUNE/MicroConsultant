@@ -51,6 +51,8 @@ def alt_items(self, method):
 								# items.insert()
 								stock_dict.update({x:0})
 								items.insert()
+
+@frappe.whitelist()
 def update(doc_name):
 	self = frappe.get_doc("Work Order",doc_name)
 	stock_dict={}
