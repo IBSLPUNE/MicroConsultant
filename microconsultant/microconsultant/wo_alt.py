@@ -166,12 +166,12 @@ def stock_entry(self,method):
 		for d in self.get('items'):
 			item_list.append(d.item_code)
 		for i in wo.get('required_items'):
-			if i.item_code not in item_list and i.required_qty >0 and i.available_qty_at_source_warehouse >0 and i.transferred_qty<i.required_qty:
+			if i.item_code not in item_list and i.required_qty >0 and i.available_qty_at_source_warehouse >i.transferred_qty and i.transferred_qty<i.required_qty:
 				item = frappe.get_doc(self)
 				items = item.append('items',{})
 				items.item_code = i.item_code
 				items.custom_alternate = 1
-				items.qty = i.required_qty
+				items.qty = i.required_qty - i.transferred_qty
 				items.s_warehouse = i.source_warehouse
 				items.custom_alternate_of = i.alternate_of			
 				# items.insert()
