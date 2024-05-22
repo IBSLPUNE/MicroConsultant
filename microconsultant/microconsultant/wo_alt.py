@@ -4,6 +4,7 @@ def alt_items(self, method):
 	stock_dict={}
 	rq_items = self.get("required_items")
 	ps_alt(self)
+	alt_stock = 0
 	for d in self.get('required_items'):
 		if d.alternate == 0:
 			if d.available_qty_at_source_warehouse<d.required_qty:
@@ -58,6 +59,7 @@ def update(doc_name):
 	stock_dict={}
 	rq_items = self.get("required_items")
 	ps_alt(self)
+	alt_stock = 0
 	for d in self.get('required_items'):
 		if d.alternate == 0:
 			if d.available_qty_at_source_warehouse<d.required_qty:
@@ -109,6 +111,7 @@ def update(doc_name):
 								
 def ps_alt(self):
 	stock_dict={}
+	alt_stock = 0
 	for d in self.get('required_items'):
 		product_specific = frappe.db.sql_list("""SELECT alternatives FROM `tabAlt Items` WHERE parent=%s""",self.production_item)
 		if d.available_qty_at_source_warehouse == None:
