@@ -125,42 +125,42 @@ def ps_alt(self):
 					if alt_stock > 0:
 						stock_dict.update({a:alt_stock})
 						sorted_stock ={k: v for k,v in sorted(stock_dict.items(), key= lambda v: v[1])}
-					for x,y in sorted_stock.items():
-						if x in altic:
-							if d.required_qty <=0:
-								self.remove(d)
-								break
-							else:
-								rqp = rq - y
-								if rqp<= 0:
-									item = frappe.get_doc(self)
-									items = item.append('required_items',{})
-									items.item_code = x
-									items.required_qty = rq
-									items.idx = d.idx
-									d.required_qty = d.required_qty - items.required_qty
-									items.alternate = 1
-									items.source_warehouse = d.source_warehouse
-									items.alternate_of = d.item_code
-									items.available_qty_at_source_warehouse = frappe.db.get_value("Bin",{"warehouse":items.source_warehouse,"item_code":items.item_code},"actual_qty")
-									# items.insert()
-									inventory = y-rq
-									stock_dict.update({x:inventory})
-									items.insert()
-								elif y>0:
-									item = frappe.get_doc(self)
-									items = item.append('required_items',{})
-									items.item_code = x
-									items.alternate = 1
-									items.required_qty = y
-									items.source_warehouse = d.source_warehouse
-									d.required_qty = d.required_qty - items.required_qty
-									items.alternate_of = d.item_code
-									items.available_qty_at_source_warehouse = frappe.db.get_value("Bin",{"warehouse":items.source_warehouse,"item_code":items.item_code},"actual_qty")
-									items.idx = d.idx
-									# items.insert()
-									stock_dict.update({x:0})
-									items.insert()
+						for x,y in sorted_stock.items():
+							if x in altic:
+								if d.required_qty <=0:
+									self.remove(d)
+									break
+								else:
+									rqp = rq - y
+									if rqp<= 0:
+										item = frappe.get_doc(self)
+										items = item.append('required_items',{})
+										items.item_code = x
+										items.required_qty = rq
+										items.idx = d.idx
+										d.required_qty = d.required_qty - items.required_qty
+										items.alternate = 1
+										items.source_warehouse = d.source_warehouse
+										items.alternate_of = d.item_code
+										items.available_qty_at_source_warehouse = frappe.db.get_value("Bin",{"warehouse":items.source_warehouse,"item_code":items.item_code},"actual_qty")
+										# items.insert()
+										inventory = y-rq
+										stock_dict.update({x:inventory})
+										items.insert()
+									elif y>0:
+										item = frappe.get_doc(self)
+										items = item.append('required_items',{})
+										items.item_code = x
+										items.alternate = 1
+										items.required_qty = y
+										items.source_warehouse = d.source_warehouse
+										d.required_qty = d.required_qty - items.required_qty
+										items.alternate_of = d.item_code
+										items.available_qty_at_source_warehouse = frappe.db.get_value("Bin",{"warehouse":items.source_warehouse,"item_code":items.item_code},"actual_qty")
+										items.idx = d.idx
+										# items.insert()
+										stock_dict.update({x:0})
+										items.insert()
 
 def stock_entry(self,method):
 	if self.work_order:
