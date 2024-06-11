@@ -121,8 +121,8 @@ def ps_alt(self):
 			altic = frappe.db.get_list('Item Alternative',filters={'item_code':d.item_code,'product_specific_alternatives':1},fields=['alternative_item_code'],pluck='alternative_item_code')
 			for a in altic:
 				if a in product_specific:
-					alt_stock = frappe.db.get_value('Bin',{'item_code':a,'warehouse':d.source_warehouse},'projected_qty')
-					if alt_stock >0:
+					alt_stock = frappe.db.get_value('Bin',{'item_code':a,'warehouse':d.source_warehouse},'projected_qty') or 0
+					if alt_stock > 0:
 						stock_dict.update({a:alt_stock})
 						sorted_stock ={k: v for k,v in sorted(stock_dict.items(), key= lambda v: v[1])}
 					for x,y in sorted_stock.items():
